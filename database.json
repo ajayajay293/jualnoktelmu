@@ -1,0 +1,15 @@
+{
+  "users": {},
+  "accounts": [],
+  "settings": {
+    "harga_biasa": 5000,
+    "harga_plus": 25000,
+    "min_withdraw": 10000,
+    "owner_id": null
+  },
+  "stats": {
+    "total_accounts": 0,
+    "total_users": 0,
+    "total_withdrawn": 0
+  }
+}

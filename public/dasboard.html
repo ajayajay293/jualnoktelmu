@@ -1570,14 +1570,10 @@
         }
 
         function logoutUser() {
-    // hapus data user
-    localStorage.removeItem("userId");
-    localStorage.removeItem("user");
+    localStorage.removeItem('tgstore_user');
+    localStorage.removeItem('tgstore_session_expiry');
 
-    // kasih notifikasi (opsional)
-    alert("Berhasil logout");
-
-    // redirect ke login
+    alert("Logout berhasil");
     window.location.href = "index.html";
 }
 

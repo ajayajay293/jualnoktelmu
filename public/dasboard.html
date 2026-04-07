@@ -1743,44 +1743,29 @@
 
         // Step 1: Send OTP - REAL API CALL
         async function sendOTP() {
-            const phone = document.getElementById('phoneInput').value.trim();
-            
-            if (!phone) {
-                showToast('Masukkan nomor telepon!', 'error');
-                return;
-            }
+    const phone = document.getElementById("phoneInput").value;
 
-            if (!phone.match(/^\d+$/)) {
-                showToast('Nomor telepon hanya boleh angka!', 'error');
-                return;
-            }
+    // 🔥 ambil user dari login
+    const user = JSON.parse(localStorage.getItem('tgstore_user'));
 
-            showLoading(true, 'Mengirim OTP ke Telegram...');
+    if (!user) {
+        alert("Harus login dulu!");
+        window.location.href = "login.html";
+        return;
+    }
 
-            try {
-                const response = await fetch(`${API_URL}/api/send-otp`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone, userId: currentUser._id })
-                });
+    const res = await fetch('/api/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            phone: phone,
+            userId: user.id   // ✅ INI YANG PENTING
+        })
+    });
 
-                const result = await response.json();
-                showLoading(false);
-
-                if (result.success) {
-                    currentSessionId = result.data.sessionId;
-                    sellData.phone = phone;
-                    showStep(2);
-                    showToast('OTP terkirim! Cek Telegram Anda', 'success');
-                } else {
-                    showToast(result.message || 'Gagal mengirim OTP', 'error');
-                }
-            } catch (error) {
-                showLoading(false);
-                console.error('Send OTP error:', error);
-                showToast('Terjadi kesalahan. Coba lagi.', 'error');
-            }
-        }
+    const data = await res.json();
+    console.log(data);
+}
 
         // Step 2: Verify OTP - REAL API CALL
         async function verifyOTP() {

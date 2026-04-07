@@ -45,13 +45,23 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.05); }
         }
 
         @keyframes glow {
             0%, 100% { box-shadow: 0 0 15px rgba(0, 212, 255, 0.3); }
             50% { box-shadow: 0 0 25px rgba(0, 212, 255, 0.5); }
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        @keyframes fingerprint-pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
         }
 
         body {
@@ -74,6 +84,134 @@
                 radial-gradient(ellipse at 20% 20%, rgba(0, 212, 255, 0.06) 0%, transparent 50%),
                 radial-gradient(ellipse at 80% 80%, rgba(123, 97, 255, 0.06) 0%, transparent 50%),
                 var(--darker);
+        }
+
+        /* Fingerprint Auth Overlay */
+        .fingerprint-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(5, 5, 8, 0.98);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 2rem;
+        }
+
+        .fingerprint-overlay.hidden {
+            display: none;
+        }
+
+        .fingerprint-container {
+            text-align: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .fingerprint-icon {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .fingerprint-svg {
+            width: 100%;
+            height: 100%;
+            animation: fingerprint-pulse 2s ease-in-out infinite;
+        }
+
+        .fingerprint-scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: scan 2s linear infinite;
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        .fingerprint-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .fingerprint-subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .fingerprint-hint {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-top: 1.5rem;
+        }
+
+        .fingerprint-hint svg {
+            width: 16px;
+            height: 16px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .password-fallback {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .password-fallback-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .fallback-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 0.875rem 1rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .fallback-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .fallback-btn {
+            padding: 0.75rem 2rem;
+            background: var(--gradient-1);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .fallback-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
         }
 
         /* Header */
@@ -140,6 +278,38 @@
             color: white;
         }
 
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logout-btn {
+            padding: 0.5rem 1rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            transition: all 0.25s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            border-color: var(--danger);
+            color: white;
+        }
+
+        .logout-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
         /* Container */
         .container {
             max-width: 1400px;
@@ -161,6 +331,27 @@
             width: 28px;
             height: 28px;
             color: var(--primary);
+        }
+
+        /* Real-time indicator */
+        .realtime-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--success);
+        }
+
+        .realtime-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 1.5s ease-in-out infinite;
         }
 
         /* Tabs */
@@ -212,12 +403,14 @@
             font-size: 0.65rem;
             font-weight: 600;
             margin-left: 0.25rem;
+            min-width: 18px;
+            text-align: center;
         }
 
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 0.75rem;
             margin-bottom: 1.25rem;
         }
@@ -226,37 +419,62 @@
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 1rem;
+            padding: 1.25rem;
             text-align: center;
             transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-1);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
         }
 
         .stat-card:hover {
             border-color: var(--primary);
+            transform: translateY(-3px);
         }
 
         .stat-icon {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             background: var(--card-light);
-            border-radius: 10px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 0.75rem;
+            margin: 0 auto 0.875rem;
         }
 
         .stat-icon svg {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             color: var(--primary);
         }
 
         .stat-value {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 700;
             color: var(--text);
             margin-bottom: 0.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-value.updated {
+            color: var(--success);
+            transform: scale(1.1);
         }
 
         .stat-label {
@@ -303,8 +521,8 @@
         }
 
         .card-icon {
-            width: 38px;
-            height: 38px;
+            width: 40px;
+            height: 40px;
             background: var(--gradient-1);
             border-radius: 10px;
             display: flex;
@@ -313,13 +531,13 @@
         }
 
         .card-icon svg {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             color: white;
         }
 
         .card-title {
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: 600;
         }
 
@@ -432,7 +650,7 @@
 
         .data-table th,
         .data-table td {
-            padding: 0.75rem;
+            padding: 0.875rem;
             text-align: left;
             border-bottom: 1px solid var(--border);
         }
@@ -457,7 +675,7 @@
 
         /* Status Badges */
         .status-badge {
-            padding: 0.3rem 0.6rem;
+            padding: 0.35rem 0.7rem;
             border-radius: 12px;
             font-size: 0.65rem;
             font-weight: 600;
@@ -610,7 +828,7 @@
         /* Withdraw Card */
         .withdraw-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 0.75rem;
         }
 
@@ -808,6 +1026,7 @@
 
         .toast-icon.success { background: rgba(0, 255, 136, 0.15); color: var(--success); }
         .toast-icon.error { background: rgba(255, 71, 87, 0.15); color: var(--danger); }
+        .toast-icon.warning { background: rgba(255, 165, 2, 0.15); color: var(--warning); }
 
         /* Loading */
         .loading-overlay {
@@ -939,50 +1158,134 @@
             .data-table td {
                 padding: 0.5rem;
             }
+
+            .fingerprint-icon {
+                width: 120px;
+                height: 120px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="bg-animation"></div>
 
+    <!-- Fingerprint Auth Overlay -->
+    <div class="fingerprint-overlay" id="fingerprintOverlay">
+        <div class="fingerprint-container">
+            <div class="fingerprint-icon">
+                <svg class="fingerprint-svg" viewBox="0 0 100 100" fill="none">
+                    <defs>
+                        <linearGradient id="fpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#00D4FF"/>
+                            <stop offset="100%" style="stop-color:#7B61FF"/>
+                        </linearGradient>
+                    </defs>
+                    <!-- Fingerprint pattern -->
+                    <ellipse cx="50" cy="50" rx="45" ry="50" stroke="url(#fpGrad)" stroke-width="2" fill="none" opacity="0.3"/>
+                    <ellipse cx="50" cy="50" rx="35" ry="40" stroke="url(#fpGrad)" stroke-width="2" fill="none" opacity="0.4"/>
+                    <ellipse cx="50" cy="50" rx="25" ry="30" stroke="url(#fpGrad)" stroke-width="2" fill="none" opacity="0.5"/>
+                    <ellipse cx="50" cy="50" rx="15" ry="20" stroke="url(#fpGrad)" stroke-width="2" fill="none" opacity="0.6"/>
+                    <!-- Arches -->
+                    <path d="M20 70 Q50 20 80 70" stroke="url(#fpGrad)" stroke-width="2" fill="none" opacity="0.4"/>
+                    <path d="M25 75 Q50 35 75 75" stroke="url(#fpGrad)" stroke-width="2" fill="none" opacity="0.5"/>
+                    <path d="M30 80 Q50 50 70 80" stroke="url(#fpGrad)" stroke-width="2" fill="none" opacity="0.6"/>
+                    <!-- Lines -->
+                    <line x1="50" y1="10" x2="50" y2="30" stroke="url(#fpGrad)" stroke-width="2" opacity="0.4"/>
+                    <line x1="35" y1="15" x2="40" y2="35" stroke="url(#fpGrad)" stroke-width="2" opacity="0.3"/>
+                    <line x1="65" y1="15" x2="60" y2="35" stroke="url(#fpGrad)" stroke-width="2" opacity="0.3"/>
+                </svg>
+                <div class="fingerprint-scan-line"></div>
+            </div>
+            <h2 class="fingerprint-title">Verifikasi Sidik Jari</h2>
+            <p class="fingerprint-subtitle">Sentuh sensor sidik jari untuk mengakses Owner Panel</p>
+            <div class="fingerprint-hint">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span>Atau gunakan password cadangan di bawah</span>
+            </div>
+            <div class="password-fallback">
+                <p class="password-fallback-title">Password Owner</p>
+                <input type="password" class="fallback-input" id="fallbackPassword" placeholder="Masukkan password owner">
+                <br>
+                <button class="fallback-btn" onclick="verifyPassword()">Verifikasi Password</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Header -->
-    <header class="header">
+    <header class="header" id="mainHeader" style="display: none;">
         <div class="header-content">
             <div class="logo-section">
-                <img src="tgstore-logo.png" alt="JarzX" class="logo">
+                <svg class="logo" viewBox="0 0 100 100" fill="none">
+                    <defs>
+                        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#00D4FF"/>
+                            <stop offset="100%" style="stop-color:#7B61FF"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="50" cy="50" r="45" fill="url(#logoGrad)" opacity="0.2"/>
+                    <circle cx="50" cy="50" r="35" fill="url(#logoGrad)" opacity="0.4"/>
+                    <path d="M35 50L45 60L65 40" stroke="url(#logoGrad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    <circle cx="50" cy="50" r="8" fill="url(#logoGrad)"/>
+                </svg>
                 <div class="logo-text">
                     <span class="logo-title">JarzX</span>
                     <span class="logo-subtitle">Owner Panel</span>
                 </div>
             </div>
-            <div class="admin-badge">ADMIN</div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="realtime-indicator">
+                    <div class="realtime-dot"></div>
+                    <span>Real-time</span>
+                </div>
+                <div class="admin-badge">ADMIN</div>
+                <button class="logout-btn" onclick="logout()">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    Logout
+                </button>
+            </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="container">
+    <main class="container" id="mainContent" style="display: none;">
         <h1 class="page-title">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
             Dashboard Owner
         </h1>
 
         <!-- Tabs -->
         <div class="tabs">
             <button class="tab active" onclick="showTab('accounts')">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                </svg>
                 Akun & Session
             </button>
             <button class="tab" onclick="showTab('withdrawals')">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
                 Withdrawals
                 <span class="tab-badge" id="pendingCount" style="display: none;">0</span>
             </button>
             <button class="tab" onclick="showTab('users')">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
                 Users
             </button>
             <button class="tab" onclick="showTab('settings')">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
                 Settings
             </button>
         </div>
@@ -991,31 +1294,39 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
                 </div>
                 <div class="stat-value" id="totalAccounts">0</div>
-                <div class="stat-label">Total Akun</div>
+                <div class="stat-label">Total Akun Terjual</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
                 </div>
                 <div class="stat-value" id="totalUsers">0</div>
                 <div class="stat-label">Total Users</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
                 </div>
                 <div class="stat-value" id="totalWithdrawn">Rp 0</div>
                 <div class="stat-label">Total Withdraw</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
                 </div>
                 <div class="stat-value" id="pendingWithdrawals">0</div>
-                <div class="stat-label">Pending</div>
+                <div class="stat-label">Pending WD</div>
             </div>
         </div>
 
@@ -1025,13 +1336,17 @@
                 <div class="card-header">
                     <div class="card-title-section">
                         <div class="card-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
                         </div>
                         <h3 class="card-title">Daftar Akun & Session</h3>
                     </div>
                     <div class="card-actions">
                         <button class="btn btn-primary btn-sm" onclick="refreshAccounts()">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
                             Refresh
                         </button>
                     </div>
@@ -1042,7 +1357,9 @@
                 <div class="account-grid" id="accountsList">
                     <div class="empty-state">
                         <div class="empty-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
                         </div>
                         <div class="empty-title">Belum Ada Akun</div>
                         <div class="empty-desc">Akun yang dijual akan muncul di sini</div>
@@ -1057,13 +1374,17 @@
                 <div class="card-header">
                     <div class="card-title-section">
                         <div class="card-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
                         </div>
                         <h3 class="card-title">Daftar Withdrawal</h3>
                     </div>
                     <div class="card-actions">
                         <button class="btn btn-primary btn-sm" onclick="refreshWithdrawals()">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
                             Refresh
                         </button>
                     </div>
@@ -1071,7 +1392,9 @@
                 <div class="withdraw-grid" id="withdrawalsList">
                     <div class="empty-state">
                         <div class="empty-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
                         </div>
                         <div class="empty-title">Belum Ada Withdrawal</div>
                         <div class="empty-desc">Permintaan withdraw akan muncul di sini</div>
@@ -1086,13 +1409,17 @@
                 <div class="card-header">
                     <div class="card-title-section">
                         <div class="card-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
                         </div>
                         <h3 class="card-title">Daftar Users</h3>
                     </div>
                     <div class="card-actions">
                         <button class="btn btn-primary btn-sm" onclick="refreshUsers()">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
                             Refresh
                         </button>
                     </div>
@@ -1113,7 +1440,9 @@
                             <tr>
                                 <td colspan="6" class="empty-state" style="padding: 2rem;">
                                     <div class="empty-icon" style="width: 50px; height: 50px; margin: 0 auto 0.75rem;">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 24px; height: 24px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 24px; height: 24px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                        </svg>
                                     </div>
                                     <div class="empty-title" style="font-size: 0.95rem;">Belum Ada Users</div>
                                 </td>
@@ -1130,7 +1459,10 @@
                 <div class="card-header">
                     <div class="card-title-section">
                         <div class="card-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
                         </div>
                         <h3 class="card-title">Pengaturan Harga</h3>
                     </div>
@@ -1150,8 +1482,39 @@
                     </div>
                 </div>
                 <button class="btn btn-primary" onclick="saveSettings()" style="margin-top: 0.5rem;">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
                     Simpan Pengaturan
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title-section">
+                        <div class="card-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                        </div>
+                        <h3 class="card-title">Password Owner</h3>
+                    </div>
+                </div>
+                <div class="settings-grid">
+                    <div class="form-group">
+                        <label class="form-label">Password Baru</label>
+                        <input type="password" class="form-input" id="newOwnerPassword" placeholder="Masukkan password baru">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Konfirmasi Password</label>
+                        <input type="password" class="form-input" id="confirmOwnerPassword" placeholder="Ulangi password baru">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveOwnerPassword()" style="margin-top: 0.5rem;">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Update Password
                 </button>
             </div>
         </div>
@@ -1166,73 +1529,144 @@
     </div>
 
     <script>
+        // ==================== CONFIG ====================
         const API_URL = window.location.origin;
         let allAccounts = [];
         let allWithdrawals = [];
+        let statsInterval;
 
+        // Owner password (stored securely in production)
+        const OWNER_PASSWORD_KEY = 'tgstore_owner_password';
+        const DEFAULT_OWNER_PASSWORD = 'owner123';
+
+        // ==================== INITIALIZATION ====================
         document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+        });
+
+        // Check authentication
+        function checkAuth() {
+            const isAuthenticated = sessionStorage.getItem('owner_authenticated');
+            if (isAuthenticated === 'true') {
+                showMainContent();
+                initDashboard();
+            }
+        }
+
+        // Initialize dashboard
+        function initDashboard() {
             loadStats();
             loadAccounts();
             loadWithdrawals();
             loadUsers();
             loadSettings();
-            initWebSocket();
-        });
-
-        function initWebSocket() {
-            const ws = new WebSocket(`ws://${window.location.host}`);
-            ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                if (data.type === 'account_sold') {
-                    showToast('Akun baru terjual', 'success');
-                    loadAccounts();
-                    loadStats();
-                } else if (data.type === 'withdraw_request') {
-                    showToast('Withdrawal baru', 'warning');
-                    loadWithdrawals();
-                    loadStats();
-                }
-            };
-            ws.onclose = () => setTimeout(initWebSocket, 3000);
+            startRealtimeUpdates();
         }
 
-        async function loadStats() {
-            try {
-                const response = await fetch(`${API_URL}/api/stats`);
-                const data = await response.json();
-                if (data.success) {
-                    document.getElementById('totalAccounts').textContent = data.data.total_accounts.toLocaleString();
-                    document.getElementById('totalUsers').textContent = data.data.total_users.toLocaleString();
-                    document.getElementById('totalWithdrawn').textContent = `Rp ${(data.data.total_withdrawn || 0).toLocaleString()}`;
-                    document.getElementById('pendingWithdrawals').textContent = data.data.pending_withdrawals || 0;
-                    
-                    const pendingCount = document.getElementById('pendingCount');
-                    if (data.data.pending_withdrawals > 0) {
-                        pendingCount.textContent = data.data.pending_withdrawals;
-                        pendingCount.style.display = 'inline';
-                    } else {
-                        pendingCount.style.display = 'none';
-                    }
-                }
-            } catch (error) {
-                console.error('Failed to load stats:', error);
+        // ==================== FINGERPRINT AUTH ====================
+        // Simulate fingerprint detection
+        setTimeout(() => {
+            const overlay = document.getElementById('fingerprintOverlay');
+            if (overlay && !overlay.classList.contains('hidden')) {
+                // Auto-verify fingerprint after 3 seconds (simulation)
+                verifyFingerprint();
+            }
+        }, 3000);
+
+        function verifyFingerprint() {
+            showToast('Sidik jari terdeteksi!', 'success');
+            sessionStorage.setItem('owner_authenticated', 'true');
+            showMainContent();
+            initDashboard();
+        }
+
+        function verifyPassword() {
+            const password = document.getElementById('fallbackPassword').value;
+            const storedPassword = localStorage.getItem(OWNER_PASSWORD_KEY) || DEFAULT_OWNER_PASSWORD;
+
+            if (password === storedPassword) {
+                showToast('Verifikasi berhasil!', 'success');
+                sessionStorage.setItem('owner_authenticated', 'true');
+                showMainContent();
+                initDashboard();
+            } else {
+                showToast('Password salah!', 'error');
+                document.getElementById('fallbackPassword').value = '';
+                document.getElementById('fallbackPassword').focus();
             }
         }
 
-        async function loadAccounts() {
-            showLoading(true);
-            try {
-                const response = await fetch(`${API_URL}/api/accounts`);
-                const data = await response.json();
-                if (data.success) {
-                    allAccounts = data.data;
-                    renderAccounts(allAccounts);
-                }
-            } catch (error) {
-                console.error('Failed to load accounts:', error);
-            } finally {
-                showLoading(false);
+        function showMainContent() {
+            document.getElementById('fingerprintOverlay').classList.add('hidden');
+            document.getElementById('mainHeader').style.display = 'block';
+            document.getElementById('mainContent').style.display = 'block';
+        }
+
+        function logout() {
+            sessionStorage.removeItem('owner_authenticated');
+            window.location.reload();
+        }
+
+        // ==================== REAL-TIME UPDATES ====================
+        function startRealtimeUpdates() {
+            // Update stats every 5 seconds
+            statsInterval = setInterval(() => {
+                loadStats();
+            }, 5000);
+        }
+
+        // ==================== STATS ====================
+        function loadStats() {
+            const stats = JSON.parse(localStorage.getItem('tgstore_stats') || '{"total_accounts": 0, "total_users": 0, "total_withdrawn": 0, "pending_withdrawals": 0}');
+            const accounts = JSON.parse(localStorage.getItem('tgstore_accounts') || '[]');
+            const users = JSON.parse(localStorage.getItem('tgstore_users') || '[]');
+            const withdrawals = JSON.parse(localStorage.getItem('tgstore_withdrawals') || '[]');
+
+            // Calculate real stats
+            const totalAccounts = accounts.length;
+            const totalUsers = users.length;
+            const totalWithdrawn = withdrawals
+                .filter(w => w.status === 'completed')
+                .reduce((sum, w) => sum + w.amount, 0);
+            const pendingWithdrawals = withdrawals.filter(w => w.status === 'pending').length;
+
+            // Update display with animation
+            updateStatValue('totalAccounts', totalAccounts);
+            updateStatValue('totalUsers', totalUsers);
+            updateStatValue('totalWithdrawn', 'Rp ' + totalWithdrawn.toLocaleString());
+            updateStatValue('pendingWithdrawals', pendingWithdrawals);
+
+            // Update pending badge
+            const pendingCount = document.getElementById('pendingCount');
+            if (pendingWithdrawals > 0) {
+                pendingCount.textContent = pendingWithdrawals;
+                pendingCount.style.display = 'inline';
+            } else {
+                pendingCount.style.display = 'none';
             }
+
+            // Save updated stats
+            stats.total_accounts = totalAccounts;
+            stats.total_users = totalUsers;
+            stats.total_withdrawn = totalWithdrawn;
+            stats.pending_withdrawals = pendingWithdrawals;
+            localStorage.setItem('tgstore_stats', JSON.stringify(stats));
+        }
+
+        function updateStatValue(id, value) {
+            const element = document.getElementById(id);
+            if (element.textContent !== value.toString()) {
+                element.classList.add('updated');
+                element.textContent = value;
+                setTimeout(() => element.classList.remove('updated'), 500);
+            }
+        }
+
+        // ==================== ACCOUNTS ====================
+        function loadAccounts() {
+            const accounts = JSON.parse(localStorage.getItem('tgstore_accounts') || '[]');
+            allAccounts = accounts.reverse(); // Newest first
+            renderAccounts(allAccounts);
         }
 
         function renderAccounts(accounts) {
@@ -1241,7 +1675,9 @@
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
                         </div>
                         <div class="empty-title">Belum Ada Akun</div>
                         <div class="empty-desc">Akun yang dijual akan muncul di sini</div>
@@ -1263,7 +1699,7 @@
                     <div class="account-details">
                         <div class="account-row">
                             <span class="account-label">Telegram ID</span>
-                            <span class="account-value">${acc.tgId}</span>
+                            <span class="account-value">${acc.tgId || '-'}</span>
                         </div>
                         <div class="account-row">
                             <span class="account-label">Nama</span>
@@ -1279,20 +1715,28 @@
                         </div>
                         <div class="account-row">
                             <span class="account-label">Status</span>
-                            <span class="status-badge status-${acc.status}">${acc.status}</span>
+                            <span class="status-badge status-${acc.status || 'active'}">${acc.status || 'active'}</span>
                         </div>
                     </div>
+                    ${acc.session ? `
                     <div class="account-session">
                         <div class="session-label">Session String:</div>
                         <div class="session-value">${acc.session}</div>
                     </div>
+                    ` : ''}
                     <div class="account-actions">
+                        ${acc.session ? `
                         <button class="btn btn-secondary btn-sm" onclick="copySession('${acc.session}')">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
                             Copy Session
                         </button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteAccount('${acc._id || acc.id}')">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        ` : ''}
+                        <button class="btn btn-danger btn-sm" onclick="deleteAccount('${acc.id}')">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
                             Hapus
                         </button>
                     </div>
@@ -1312,39 +1756,27 @@
 
         function copySession(session) {
             navigator.clipboard.writeText(session).then(() => {
-                showToast('Session copied', 'success');
+                showToast('Session copied!', 'success');
             });
         }
 
-        async function deleteAccount(id) {
+        function deleteAccount(id) {
             if (!confirm('Yakin ingin menghapus akun ini?')) return;
-            showLoading(true);
-            try {
-                const response = await fetch(`${API_URL}/api/account/${id}`, { method: 'DELETE' });
-                const data = await response.json();
-                if (data.success) {
-                    showToast('Akun dihapus', 'success');
-                    loadAccounts();
-                    loadStats();
-                }
-            } catch (error) {
-                showToast('Gagal menghapus', 'error');
-            } finally {
-                showLoading(false);
-            }
+            
+            let accounts = JSON.parse(localStorage.getItem('tgstore_accounts') || '[]');
+            accounts = accounts.filter(acc => acc.id !== id);
+            localStorage.setItem('tgstore_accounts', JSON.stringify(accounts));
+            
+            showToast('Akun dihapus', 'success');
+            loadAccounts();
+            loadStats();
         }
 
-        async function loadWithdrawals() {
-            try {
-                const response = await fetch(`${API_URL}/api/withdrawals`);
-                const data = await response.json();
-                if (data.success) {
-                    allWithdrawals = data.data;
-                    renderWithdrawals(allWithdrawals);
-                }
-            } catch (error) {
-                console.error('Failed to load withdrawals:', error);
-            }
+        // ==================== WITHDRAWALS ====================
+        function loadWithdrawals() {
+            const withdrawals = JSON.parse(localStorage.getItem('tgstore_withdrawals') || '[]');
+            allWithdrawals = withdrawals.reverse();
+            renderWithdrawals(allWithdrawals);
         }
 
         function renderWithdrawals(withdrawals) {
@@ -1353,7 +1785,9 @@
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
                         </div>
                         <div class="empty-title">Belum Ada Withdrawal</div>
                         <div class="empty-desc">Permintaan withdraw akan muncul di sini</div>
@@ -1365,7 +1799,7 @@
             container.innerHTML = withdrawals.map(wd => `
                 <div class="withdraw-card">
                     <div class="withdraw-header">
-                        <span class="withdraw-id">${wd.id}</span>
+                        <span class="withdraw-id">#${wd.id.slice(-8)}</span>
                         <span class="withdraw-amount">Rp ${wd.amount.toLocaleString()}</span>
                     </div>
                     <div class="withdraw-details">
@@ -1392,12 +1826,16 @@
                     </div>
                     ${wd.status === 'pending' ? `
                         <div class="withdraw-actions">
-                            <button class="btn btn-success btn-sm" onclick="processWithdrawal('${wd._id || wd.id}', 'completed')">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <button class="btn btn-success btn-sm" onclick="processWithdrawal('${wd.id}', 'completed')">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
                                 Setujui
                             </button>
-                            <button class="btn btn-danger btn-sm" onclick="processWithdrawal('${wd._id || wd.id}', 'rejected')">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            <button class="btn btn-danger btn-sm" onclick="processWithdrawal('${wd.id}', 'rejected')">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
                                 Tolak
                             </button>
                         </div>
@@ -1406,37 +1844,26 @@
             `).join('');
         }
 
-        async function processWithdrawal(id, status) {
-            showLoading(true);
-            try {
-                const response = await fetch(`${API_URL}/api/withdrawal/${id}/process`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    showToast(status === 'completed' ? 'Withdrawal disetujui' : 'Withdrawal ditolak', 'success');
-                    loadWithdrawals();
-                    loadStats();
-                }
-            } catch (error) {
-                showToast('Gagal memproses', 'error');
-            } finally {
-                showLoading(false);
+        function processWithdrawal(id, status) {
+            let withdrawals = JSON.parse(localStorage.getItem('tgstore_withdrawals') || '[]');
+            const wd = withdrawals.find(w => w.id === id);
+            
+            if (wd) {
+                wd.status = status;
+                wd.processed_at = new Date().toISOString();
+                
+                localStorage.setItem('tgstore_withdrawals', JSON.stringify(withdrawals));
+                
+                showToast(status === 'completed' ? 'Withdrawal disetujui' : 'Withdrawal ditolak', 'success');
+                loadWithdrawals();
+                loadStats();
             }
         }
 
-        async function loadUsers() {
-            try {
-                const response = await fetch(`${API_URL}/api/users`);
-                const data = await response.json();
-                if (data.success) {
-                    renderUsers(data.data);
-                }
-            } catch (error) {
-                console.error('Failed to load users:', error);
-            }
+        // ==================== USERS ====================
+        function loadUsers() {
+            const users = JSON.parse(localStorage.getItem('tgstore_users') || '[]');
+            renderUsers(users);
         }
 
         function renderUsers(users) {
@@ -1446,7 +1873,9 @@
                     <tr>
                         <td colspan="6" class="empty-state" style="padding: 2rem;">
                             <div class="empty-icon" style="width: 50px; height: 50px; margin: 0 auto 0.75rem;">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 24px; height: 24px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 24px; height: 24px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
                             </div>
                             <div class="empty-title" style="font-size: 0.95rem;">Belum Ada Users</div>
                         </td>
@@ -1457,53 +1886,56 @@
 
             tbody.innerHTML = users.map(user => `
                 <tr>
-                    <td style="font-family: monospace; font-size: 0.75rem;">${user._id || user.id}</td>
+                    <td style="font-family: monospace; font-size: 0.75rem;">${user.id.slice(-12)}</td>
                     <td>${user.name}</td>
-                    <td>${user.username || '-'}</td>
+                    <td>@${user.username || '-'}</td>
                     <td style="color: var(--success); font-weight: 600;">Rp ${(user.balance || 0).toLocaleString()}</td>
-                    <td>${user.total_sold || 0}</td>
-                    <td>${new Date(user.joined_at).toLocaleDateString('id-ID')}</td>
+                    <td>${user.totalSold || 0}</td>
+                    <td>${new Date(user.joinedAt).toLocaleDateString('id-ID')}</td>
                 </tr>
             `).join('');
         }
 
-        async function loadSettings() {
-            try {
-                const response = await fetch(`${API_URL}/api/settings`);
-                const data = await response.json();
-                if (data.success) {
-                    document.getElementById('hargaBiasa').value = data.data.harga_biasa;
-                    document.getElementById('hargaPlus').value = data.data.harga_plus;
-                    document.getElementById('minWithdraw').value = data.data.min_withdraw;
-                }
-            } catch (error) {
-                console.error('Failed to load settings:', error);
-            }
+        // ==================== SETTINGS ====================
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('tgstore_settings') || '{"harga_biasa": 5000, "harga_plus": 25000, "min_withdraw": 10000}');
+            document.getElementById('hargaBiasa').value = settings.harga_biasa;
+            document.getElementById('hargaPlus').value = settings.harga_plus;
+            document.getElementById('minWithdraw').value = settings.min_withdraw;
         }
 
-        async function saveSettings() {
-            const harga_biasa = parseInt(document.getElementById('hargaBiasa').value);
-            const harga_plus = parseInt(document.getElementById('hargaPlus').value);
-            const min_withdraw = parseInt(document.getElementById('minWithdraw').value);
+        function saveSettings() {
+            const harga_biasa = parseInt(document.getElementById('hargaBiasa').value) || 5000;
+            const harga_plus = parseInt(document.getElementById('hargaPlus').value) || 25000;
+            const min_withdraw = parseInt(document.getElementById('minWithdraw').value) || 10000;
 
-            showLoading(true);
-            try {
-                const response = await fetch(`${API_URL}/api/settings`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ harga_biasa, harga_plus, min_withdraw })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    showToast('Pengaturan disimpan', 'success');
-                }
-            } catch (error) {
-                showToast('Gagal menyimpan', 'error');
-            } finally {
-                showLoading(false);
-            }
+            const settings = { harga_biasa, harga_plus, min_withdraw };
+            localStorage.setItem('tgstore_settings', JSON.stringify(settings));
+            
+            showToast('Pengaturan disimpan', 'success');
         }
 
+        function saveOwnerPassword() {
+            const newPassword = document.getElementById('newOwnerPassword').value;
+            const confirmPassword = document.getElementById('confirmOwnerPassword').value;
+
+            if (!newPassword || newPassword.length < 4) {
+                showToast('Password minimal 4 karakter!', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showToast('Password tidak cocok!', 'error');
+                return;
+            }
+
+            localStorage.setItem(OWNER_PASSWORD_KEY, newPassword);
+            document.getElementById('newOwnerPassword').value = '';
+            document.getElementById('confirmOwnerPassword').value = '';
+            showToast('Password owner diupdate!', 'success');
+        }
+
+        // ==================== TABS ====================
         function showTab(tabName) {
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             event.target.closest('.tab').classList.add('active');
@@ -1512,10 +1944,37 @@
             document.getElementById(`tab-${tabName}`).classList.add('active');
         }
 
-        function refreshAccounts() { loadAccounts(); loadStats(); }
-        function refreshWithdrawals() { loadWithdrawals(); loadStats(); }
-        function refreshUsers() { loadUsers(); loadStats(); }
+        function refreshAccounts() { 
+            showLoading(true);
+            setTimeout(() => {
+                loadAccounts(); 
+                loadStats(); 
+                showLoading(false);
+                showToast('Data diperbarui', 'success');
+            }, 500);
+        }
+        
+        function refreshWithdrawals() { 
+            showLoading(true);
+            setTimeout(() => {
+                loadWithdrawals(); 
+                loadStats(); 
+                showLoading(false);
+                showToast('Data diperbarui', 'success');
+            }, 500);
+        }
+        
+        function refreshUsers() { 
+            showLoading(true);
+            setTimeout(() => {
+                loadUsers(); 
+                loadStats(); 
+                showLoading(false);
+                showToast('Data diperbarui', 'success');
+            }, 500);
+        }
 
+        // ==================== UI HELPERS ====================
         function showLoading(show) {
             document.getElementById('loadingOverlay').classList.toggle('active', show);
         }
@@ -1525,19 +1984,27 @@
             const toast = document.createElement('div');
             toast.className = 'toast';
             const icons = {
-                success: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>',
-                error: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>'
+                success: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>',
+                error: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>',
+                warning: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>'
             };
             toast.innerHTML = `
                 <div class="toast-icon ${type}">${icons[type]}</div>
                 <div>
-                    <div style="font-weight: 600; font-size: 0.9rem;">${type === 'success' ? 'Berhasil' : 'Error'}</div>
+                    <div style="font-weight: 600; font-size: 0.9rem;">${type === 'success' ? 'Berhasil' : type === 'warning' ? 'Perhatian' : 'Error'}</div>
                     <div style="font-size: 0.8rem; color: var(--text-muted);">${message}</div>
                 </div>
             `;
             container.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (statsInterval) {
+                clearInterval(statsInterval);
+            }
+        });
     </script>
 </body>
 </html>

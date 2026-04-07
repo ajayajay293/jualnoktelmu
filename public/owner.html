@@ -143,6 +143,7 @@
             width: 100%;
             max-width: 360px;
             animation: slideIn 0.4s ease-out;
+            position: relative;
         }
 
         .login-card::before {
@@ -638,10 +639,10 @@
             color: var(--danger);
         }
 
-        /* Account Card */
+        /* Account Card - COMPLETE DETAILS */
         .account-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             gap: 0.75rem;
         }
 
@@ -661,20 +662,20 @@
             display: flex;
             align-items: center;
             gap: 0.625rem;
-            margin-bottom: 0.625rem;
-            padding-bottom: 0.625rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
             border-bottom: 1px solid var(--border);
         }
 
         .account-avatar {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             background: var(--gradient-1);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: 700;
             flex-shrink: 0;
         }
@@ -685,7 +686,7 @@
         }
 
         .account-phone {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 600;
             font-family: monospace;
             white-space: nowrap;
@@ -694,68 +695,114 @@
         }
 
         .account-username {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
         }
 
         .account-price {
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--success);
             flex-shrink: 0;
         }
 
+        /* Account Details Grid */
         .account-details {
             display: grid;
-            gap: 0.3rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
         }
 
-        .account-row {
+        .detail-row {
             display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
+            flex-direction: column;
+            padding: 0.5rem;
+            background: var(--card);
+            border-radius: 8px;
         }
 
-        .account-label {
+        .detail-label {
+            font-size: 0.65rem;
             color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
         }
 
-        .account-value {
+        .detail-value {
             font-family: monospace;
-            font-size: 0.7rem;
-            max-width: 140px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            font-size: 0.75rem;
+            color: var(--text);
+            word-break: break-all;
         }
 
-        .account-session {
-            margin-top: 0.625rem;
-            padding-top: 0.625rem;
+        .detail-value.username {
+            color: var(--primary);
+        }
+
+        .detail-value.id {
+            color: var(--warning);
+        }
+
+        /* Session Section */
+        .session-section {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
             border-top: 1px solid var(--border);
         }
 
+        .session-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
         .session-label {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
-            margin-bottom: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .session-actions {
+            display: flex;
+            gap: 0.375rem;
+        }
+
+        .session-btn {
+            padding: 0.25rem 0.5rem;
+            background: var(--card-light);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-muted);
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .session-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
         }
 
         .session-value {
             background: var(--card);
-            padding: 0.5rem;
-            border-radius: 6px;
+            padding: 0.625rem;
+            border-radius: 8px;
             font-family: monospace;
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             word-break: break-all;
-            max-height: 70px;
+            max-height: 100px;
             overflow-y: auto;
+            line-height: 1.4;
+            color: var(--text-muted);
         }
 
         .account-actions {
             display: flex;
             gap: 0.5rem;
-            margin-top: 0.625rem;
+            margin-top: 0.75rem;
         }
 
         .account-actions .btn {
@@ -765,7 +812,7 @@
         /* Withdraw Card */
         .withdraw-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 0.75rem;
         }
 
@@ -994,54 +1041,25 @@
                 font-size: 1.15rem;
             }
 
-            .account-grid,
+            .account-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .account-details {
+                grid-template-columns: 1fr;
+            }
+
             .withdraw-grid {
                 grid-template-columns: 1fr;
             }
 
-            .filter-bar {
-                flex-direction: column;
-            }
-
-            .search-input {
-                width: 100%;
-            }
-
-            .data-table {
-                font-size: 0.75rem;
-            }
-
-            .data-table th,
-            .data-table td {
-                padding: 0.5rem;
-            }
-
-            .login-logo {
-                width: 70px;
-                height: 70px;
-            }
-
-            .login-title {
-                font-size: 1.5rem;
-            }
-
-            .login-card {
-                padding: 1.25rem;
-            }
-
             .tabs {
-                gap: 0.375rem;
+                overflow-x: scroll;
+                scrollbar-width: none;
             }
 
-            .tab {
-                padding: 0.5rem 0.75rem;
-                font-size: 0.8rem;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
+            .tabs::-webkit-scrollbar {
+                display: none;
             }
         }
     </style>
@@ -1053,42 +1071,47 @@
     <div class="login-screen" id="loginScreen">
         <svg class="login-logo" viewBox="0 0 100 100" fill="none">
             <defs>
-                <linearGradient id="adminGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <linearGradient id="loginGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" style="stop-color:#FF4757"/>
                     <stop offset="100%" style="stop-color:#FF6B6B"/>
                 </linearGradient>
             </defs>
-            <circle cx="50" cy="50" r="45" fill="url(#adminGrad)"/>
+            <circle cx="50" cy="50" r="45" fill="url(#loginGrad)"/>
             <path d="M50 30L55 45H70L58 55L63 70L50 60L37 70L42 55L30 45H45L50 30Z" fill="white"/>
         </svg>
         <h1 class="login-title">Owner Panel</h1>
-        <p class="login-subtitle">Masukkan password untuk melanjutkan</p>
+        <p class="login-subtitle">Masukkan password untuk mengakses panel admin</p>
+        
         <div class="login-card">
             <div class="form-group">
                 <label class="form-label">Password</label>
-                <input type="password" class="form-input" id="passwordInput" placeholder="Masukkan password..." onkeypress="handlePasswordKeyPress(event)">
+                <input type="password" class="form-input" id="passwordInput" placeholder="Masukkan password" onkeypress="handleKeyPress(event)">
             </div>
             <button class="btn btn-admin" onclick="login()">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
-                Masuk
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                Login
+            </button>
+            <button class="btn btn-secondary" onclick="window.location.href='index.html'">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Kembali
             </button>
         </div>
     </div>
 
-    <!-- Main Dashboard -->
-    <div id="mainDashboard" style="display: none;">
+    <!-- Main App -->
+    <div id="mainApp" style="display: none;">
         <!-- Header -->
         <header class="header">
             <div class="header-content">
                 <div class="logo-section">
                     <svg class="logo" viewBox="0 0 100 100" fill="none">
                         <defs>
-                            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                                 <stop offset="0%" style="stop-color:#00D4FF"/>
                                 <stop offset="100%" style="stop-color:#7B61FF"/>
                             </linearGradient>
                         </defs>
-                        <circle cx="50" cy="50" r="45" fill="url(#logoGrad)"/>
+                        <circle cx="50" cy="50" r="45" fill="url(#headerGrad)"/>
                         <path d="M30 50L45 65L70 35" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
                     <div class="logo-text">
@@ -1097,10 +1120,10 @@
                     </div>
                 </div>
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div class="admin-badge">Admin</div>
+                    <span class="admin-badge">Admin</span>
                     <button class="logout-btn" onclick="logout()">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                        Keluar
+                        Logout
                     </button>
                 </div>
             </div>
@@ -1108,24 +1131,22 @@
 
         <!-- Main Content -->
         <main class="container">
-            <h1 class="page-title">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                Dashboard Owner
-            </h1>
-
             <!-- Tabs -->
             <div class="tabs">
-                <button class="tab active" onclick="showTab('accounts')">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                    Akun & Session
+                <button class="tab active" onclick="showTab('dashboard')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                    Dashboard
+                </button>
+                <button class="tab" onclick="showTab('accounts')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    Akun
                 </button>
                 <button class="tab" onclick="showTab('withdrawals')">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                    Withdrawals
-                    <span class="tab-badge" id="pendingCount" style="display: none;">0</span>
+                    Withdraw <span class="tab-badge" id="pendingBadge" style="display: none;">0</span>
                 </button>
                 <button class="tab" onclick="showTab('users')">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     Users
                 </button>
                 <button class="tab" onclick="showTab('settings')">
@@ -1134,121 +1155,97 @@
                 </button>
             </div>
 
-            <!-- Stats -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            <!-- Dashboard Tab -->
+            <div class="page-content active" id="tab-dashboard">
+                <h2 class="page-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    Dashboard
+                </h2>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                        </div>
+                        <div class="stat-value" id="dashAccounts">0</div>
+                        <div class="stat-label">Total Akun</div>
                     </div>
-                    <div class="stat-value" id="totalAccounts">0</div>
-                    <div class="stat-label">Total Akun</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        </div>
+                        <div class="stat-value" id="dashUsers">0</div>
+                        <div class="stat-label">Total Users</div>
                     </div>
-                    <div class="stat-value" id="totalUsers">0</div>
-                    <div class="stat-label">Total Users</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div class="stat-value" id="dashWithdrawn">Rp0</div>
+                        <div class="stat-label">Total Withdraw</div>
                     </div>
-                    <div class="stat-value" id="totalWithdrawn">Rp 0</div>
-                    <div class="stat-label">Total Withdraw</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div class="stat-value" id="dashPending">0</div>
+                        <div class="stat-label">Pending WD</div>
                     </div>
-                    <div class="stat-value" id="pendingWithdrawals">0</div>
-                    <div class="stat-label">Pending</div>
                 </div>
             </div>
 
-            <!-- Accounts Tab -->
-            <div class="page-content active" id="tab-accounts">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title-section">
-                            <div class="card-icon">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                            </div>
-                            <h3 class="card-title">Daftar Akun & Session</h3>
+            <!-- Accounts Tab - WITH COMPLETE DETAILS -->
+            <div class="page-content" id="tab-accounts">
+                <h2 class="page-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    Daftar Akun Telegram
+                </h2>
+
+                <div class="filter-bar">
+                    <input type="text" class="search-input" id="accountSearch" placeholder="Cari nomor, username, atau ID..." oninput="filterAccounts()">
+                </div>
+
+                <div class="account-grid" id="accountsGrid">
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                         </div>
-                        <div class="card-actions">
-                            <button class="btn btn-primary btn-sm" onclick="refreshAccounts()">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                                Refresh
-                            </button>
-                        </div>
-                    </div>
-                    <div class="filter-bar">
-                        <input type="text" class="search-input" id="accountSearch" placeholder="Cari nomor atau username..." oninput="filterAccounts()">
-                    </div>
-                    <div class="account-grid" id="accountsList">
-                        <div class="empty-state">
-                            <div class="empty-icon">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                            </div>
-                            <div class="empty-title">Belum Ada Akun</div>
-                            <div class="empty-desc">Akun yang dijual akan muncul di sini</div>
-                        </div>
+                        <div class="empty-title">Belum Ada Akun</div>
+                        <div class="empty-desc">Akun yang dijual akan muncul di sini</div>
                     </div>
                 </div>
             </div>
 
             <!-- Withdrawals Tab -->
             <div class="page-content" id="tab-withdrawals">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title-section">
-                            <div class="card-icon">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                            </div>
-                            <h3 class="card-title">Daftar Withdrawal</h3>
+                <h2 class="page-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    Permintaan Withdraw
+                </h2>
+
+                <div class="withdraw-grid" id="withdrawalsGrid">
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                         </div>
-                        <div class="card-actions">
-                            <button class="btn btn-primary btn-sm" onclick="refreshWithdrawals()">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                                Refresh
-                            </button>
-                        </div>
-                    </div>
-                    <div class="withdraw-grid" id="withdrawalsList">
-                        <div class="empty-state">
-                            <div class="empty-icon">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                            </div>
-                            <div class="empty-title">Belum Ada Withdrawal</div>
-                            <div class="empty-desc">Permintaan withdraw akan muncul di sini</div>
-                        </div>
+                        <div class="empty-title">Belum Ada Withdraw</div>
+                        <div class="empty-desc">Permintaan withdraw akan muncul di sini</div>
                     </div>
                 </div>
             </div>
 
             <!-- Users Tab -->
             <div class="page-content" id="tab-users">
+                <h2 class="page-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    Daftar User
+                </h2>
+
                 <div class="card">
-                    <div class="card-header">
-                        <div class="card-title-section">
-                            <div class="card-icon">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                            </div>
-                            <h3 class="card-title">Daftar Users</h3>
-                        </div>
-                        <div class="card-actions">
-                            <button class="btn btn-primary btn-sm" onclick="refreshUsers()">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                                Refresh
-                            </button>
-                        </div>
-                    </div>
                     <div class="table-container">
-                        <table class="data-table" id="usersTable">
+                        <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
                                     <th>Nama</th>
                                     <th>Username</th>
                                     <th>Saldo</th>
@@ -1256,14 +1253,9 @@
                                     <th>Bergabung</th>
                                 </tr>
                             </thead>
-                            <tbody id="usersList">
+                            <tbody id="usersTableBody">
                                 <tr>
-                                    <td colspan="6" class="empty-state" style="padding: 2rem;">
-                                        <div class="empty-icon" style="width: 50px; height: 50px; margin: 0 auto 0.75rem;">
-                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 24px; height: 24px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                                        </div>
-                                        <div class="empty-title" style="font-size: 0.9rem;">Belum Ada Users</div>
-                                    </td>
+                                    <td colspan="5" style="text-align: center; padding: 2rem;">Belum ada user</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1273,30 +1265,37 @@
 
             <!-- Settings Tab -->
             <div class="page-content" id="tab-settings">
+                <h2 class="page-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Pengaturan
+                </h2>
+
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title-section">
                             <div class="card-icon">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             </div>
-                            <h3 class="card-title">Pengaturan Harga</h3>
+                            <h3 class="card-title">Harga & Limit</h3>
                         </div>
                     </div>
+
                     <div class="settings-grid">
                         <div class="form-group">
                             <label class="form-label">Harga Nomor Biasa (Rp)</label>
-                            <input type="number" class="form-input" id="hargaBiasa" placeholder="5000">
+                            <input type="number" class="form-input" id="settingBiasa" value="5000">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Harga Nomor Premium/+1 (Rp)</label>
-                            <input type="number" class="form-input" id="hargaPlus" placeholder="25000">
+                            <label class="form-label">Harga Nomor Premium (Rp)</label>
+                            <input type="number" class="form-input" id="settingPlus" value="25000">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Minimal Withdraw (Rp)</label>
-                            <input type="number" class="form-input" id="minWithdraw" placeholder="10000">
+                            <input type="number" class="form-input" id="settingMinWd" value="10000">
                         </div>
                     </div>
-                    <button class="btn btn-primary" onclick="saveSettings()" style="margin-top: 0.5rem; width: auto;">
+
+                    <button class="btn btn-primary" onclick="saveSettings()" style="margin-top: 1rem;">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                         Simpan Pengaturan
                     </button>
@@ -1317,136 +1316,155 @@
         const API_URL = window.location.origin;
         let allAccounts = [];
         let allWithdrawals = [];
-        const OWNER_PASSWORD = 'jarr';
+        let allUsers = [];
 
+        // Check if already logged in
         document.addEventListener('DOMContentLoaded', () => {
-            checkAuth();
-        });
-
-        // Check authentication
-        function checkAuth() {
             const isLoggedIn = sessionStorage.getItem('owner_logged_in');
             if (isLoggedIn === 'true') {
-                showDashboard();
+                showMainApp();
             }
+        });
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') login();
         }
 
-        // Handle password enter key
-        function handlePasswordKeyPress(event) {
-            if (event.key === 'Enter') {
-                login();
-            }
-        }
-
-        // Login function
-        function login() {
-            const passwordInput = document.getElementById('passwordInput');
-            const password = passwordInput.value.trim();
-
+        async function login() {
+            const password = document.getElementById('passwordInput').value;
+            
             if (!password) {
-                passwordInput.classList.add('error');
                 showToast('Masukkan password!', 'error');
-                setTimeout(() => passwordInput.classList.remove('error'), 400);
                 return;
             }
 
-            if (password === OWNER_PASSWORD) {
-                sessionStorage.setItem('owner_logged_in', 'true');
-                showDashboard();
-                showToast('Login berhasil!', 'success');
-            } else {
-                passwordInput.classList.add('error');
-                passwordInput.value = '';
-                showToast('Password salah!', 'error');
-                setTimeout(() => passwordInput.classList.remove('error'), 400);
+            showLoading(true);
+
+            try {
+                const response = await fetch(`${API_URL}/api/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+
+                const result = await response.json();
+                showLoading(false);
+
+                if (result.success) {
+                    sessionStorage.setItem('owner_logged_in', 'true');
+                    showMainApp();
+                    showToast('Login berhasil!', 'success');
+                } else {
+                    document.getElementById('passwordInput').classList.add('error');
+                    showToast(result.message || 'Password salah!', 'error');
+                    setTimeout(() => {
+                        document.getElementById('passwordInput').classList.remove('error');
+                    }, 500);
+                }
+            } catch (error) {
+                showLoading(false);
+                console.error('Login error:', error);
+                
+                // Fallback: check hardcoded password
+                if (password === 'JarzXOwner2024!') {
+                    sessionStorage.setItem('owner_logged_in', 'true');
+                    showMainApp();
+                    showToast('Login berhasil!', 'success');
+                } else {
+                    document.getElementById('passwordInput').classList.add('error');
+                    showToast('Password salah!', 'error');
+                    setTimeout(() => {
+                        document.getElementById('passwordInput').classList.remove('error');
+                    }, 500);
+                }
             }
         }
 
-        // Show dashboard
-        function showDashboard() {
+        function showMainApp() {
             document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('mainDashboard').style.display = 'block';
-            loadStats();
-            loadAccounts();
-            loadWithdrawals();
-            loadUsers();
-            loadSettings();
+            document.getElementById('mainApp').style.display = 'block';
+            loadDashboard();
         }
 
-        // Logout function
         function logout() {
             sessionStorage.removeItem('owner_logged_in');
-            location.reload();
+            window.location.reload();
         }
 
-        async function loadStats() {
+        function showTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.closest('.tab').classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.page-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+
+            // Load data
+            if (tabName === 'accounts') loadAccounts();
+            else if (tabName === 'withdrawals') loadWithdrawals();
+            else if (tabName === 'users') loadUsers();
+            else if (tabName === 'dashboard') loadDashboard();
+            else if (tabName === 'settings') loadSettings();
+        }
+
+        async function loadDashboard() {
             try {
                 const response = await fetch(`${API_URL}/api/stats`);
-                const data = await response.json();
-                if (data.success) {
-                    document.getElementById('totalAccounts').textContent = data.data.total_accounts.toLocaleString();
-                    document.getElementById('totalUsers').textContent = data.data.total_users.toLocaleString();
-                    document.getElementById('totalWithdrawn').textContent = `Rp ${(data.data.total_withdrawn || 0).toLocaleString()}`;
-                    document.getElementById('pendingWithdrawals').textContent = data.data.pending_withdrawals || 0;
+                const result = await response.json();
+                
+                if (result.success) {
+                    const stats = result.data;
+                    document.getElementById('dashAccounts').textContent = stats.total_accounts || 0;
+                    document.getElementById('dashUsers').textContent = stats.total_users || 0;
+                    document.getElementById('dashWithdrawn').textContent = `Rp${(stats.total_withdrawn || 0).toLocaleString()}`;
+                    document.getElementById('dashPending').textContent = stats.pending_withdrawals || 0;
                     
-                    const pendingCount = document.getElementById('pendingCount');
-                    if (data.data.pending_withdrawals > 0) {
-                        pendingCount.textContent = data.data.pending_withdrawals;
-                        pendingCount.style.display = 'inline';
+                    // Update badge
+                    const badge = document.getElementById('pendingBadge');
+                    if (stats.pending_withdrawals > 0) {
+                        badge.textContent = stats.pending_withdrawals;
+                        badge.style.display = 'inline';
                     } else {
-                        pendingCount.style.display = 'none';
+                        badge.style.display = 'none';
                     }
                 }
             } catch (error) {
-                // Fallback to localStorage
-                const accounts = JSON.parse(localStorage.getItem('tgstore_accounts') || '[]');
-                const users = JSON.parse(localStorage.getItem('tgstore_users') || '[]');
-                const withdrawals = JSON.parse(localStorage.getItem('tgstore_withdrawals') || '[]');
-                const pendingWithdrawals = withdrawals.filter(w => w.status === 'pending').length;
-                const totalWithdrawn = withdrawals
-                    .filter(w => w.status === 'completed')
-                    .reduce((sum, w) => sum + w.amount, 0);
-
-                document.getElementById('totalAccounts').textContent = accounts.length.toLocaleString();
-                document.getElementById('totalUsers').textContent = users.length.toLocaleString();
-                document.getElementById('totalWithdrawn').textContent = `Rp ${totalWithdrawn.toLocaleString()}`;
-                document.getElementById('pendingWithdrawals').textContent = pendingWithdrawals;
-
-                const pendingCount = document.getElementById('pendingCount');
-                if (pendingWithdrawals > 0) {
-                    pendingCount.textContent = pendingWithdrawals;
-                    pendingCount.style.display = 'inline';
-                } else {
-                    pendingCount.style.display = 'none';
-                }
+                console.error('Load dashboard error:', error);
             }
         }
 
         async function loadAccounts() {
             showLoading(true);
+            
             try {
-                const response = await fetch(`${API_URL}/api/accounts`);
-                const data = await response.json();
-                if (data.success) {
-                    allAccounts = data.data;
+                const response = await fetch(`${API_URL}/api/admin/accounts`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    allAccounts = result.data;
                     renderAccounts(allAccounts);
                 }
             } catch (error) {
-                const accounts = JSON.parse(localStorage.getItem('tgstore_accounts') || '[]');
-                allAccounts = accounts;
-                renderAccounts(accounts);
-            } finally {
-                showLoading(false);
+                console.error('Load accounts error:', error);
+                showToast('Gagal memuat akun', 'error');
             }
+            
+            showLoading(false);
         }
 
         function renderAccounts(accounts) {
-            const container = document.getElementById('accountsList');
+            const container = document.getElementById('accountsGrid');
+            
             if (accounts.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                         </div>
                         <div class="empty-title">Belum Ada Akun</div>
                         <div class="empty-desc">Akun yang dijual akan muncul di sini</div>
@@ -1458,45 +1476,58 @@
             container.innerHTML = accounts.map(acc => `
                 <div class="account-card">
                     <div class="account-header">
-                        <div class="account-avatar">${(acc.tgFirstName || acc.sellerName || 'U').charAt(0).toUpperCase()}</div>
+                        <div class="account-avatar">${(acc.tgFirstName || 'U').charAt(0).toUpperCase()}</div>
                         <div class="account-info">
                             <div class="account-phone">+${acc.phone}</div>
                             <div class="account-username">@${acc.tgUsername || 'no_username'} | ${acc.sellerName}</div>
                         </div>
-                        <div class="account-price">Rp ${acc.price.toLocaleString()}</div>
+                        <div class="account-price">Rp${acc.price.toLocaleString()}</div>
                     </div>
+                    
                     <div class="account-details">
-                        <div class="account-row">
-                            <span class="account-label">Telegram ID</span>
-                            <span class="account-value">${acc.tgId}</span>
+                        <div class="detail-row">
+                            <span class="detail-label">Telegram ID</span>
+                            <span class="detail-value id">${acc.tgId}</span>
                         </div>
-                        <div class="account-row">
-                            <span class="account-label">Nama</span>
-                            <span class="account-value">${acc.tgFirstName || '-'} ${acc.tgLastName || ''}</span>
+                        <div class="detail-row">
+                            <span class="detail-label">Username</span>
+                            <span class="detail-value username">@${acc.tgUsername || 'N/A'}</span>
                         </div>
-                        <div class="account-row">
-                            <span class="account-label">Tipe</span>
-                            <span class="account-value">${acc.is_plus ? 'Premium (+1)' : 'Biasa'}</span>
+                        <div class="detail-row">
+                            <span class="detail-label">Nama Lengkap</span>
+                            <span class="detail-value">${acc.tgFullName || acc.tgFirstName || 'N/A'}</span>
                         </div>
-                        <div class="account-row">
-                            <span class="account-label">Tanggal</span>
-                            <span class="account-value">${new Date(acc.sold_at).toLocaleString('id-ID')}</span>
+                        <div class="detail-row">
+                            <span class="detail-label">Tanggal Jual</span>
+                            <span class="detail-value">${new Date(acc.sold_at).toLocaleString('id-ID')}</span>
                         </div>
-                        <div class="account-row">
-                            <span class="account-label">Status</span>
-                            <span class="status-badge status-${acc.status}">${acc.status}</span>
+                        <div class="detail-row">
+                            <span class="detail-label">Seller ID</span>
+                            <span class="detail-value">${acc.sellerId}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Status</span>
+                            <span class="detail-value"><span class="status-badge status-${acc.status}">${acc.status}</span></span>
                         </div>
                     </div>
-                    <div class="account-session">
-                        <div class="session-label">Session String:</div>
-                        <div class="session-value">${acc.session}</div>
+                    
+                    <div class="session-section">
+                        <div class="session-header">
+                            <span class="session-label">Session String (Lengkap)</span>
+                            <div class="session-actions">
+                                <button class="session-btn" onclick="copySession('${acc.session}', this)">Copy</button>
+                                <button class="session-btn" onclick="toggleSession(this)">Show</button>
+                            </div>
+                        </div>
+                        <div class="session-value" style="filter: blur(4px);">${acc.session}</div>
                     </div>
+                    
                     <div class="account-actions">
-                        <button class="btn btn-secondary btn-sm" onclick="copySession('${acc.session}')">
+                        <button class="btn btn-primary btn-sm" onclick="copyAccountData('${acc._id}')">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                            Copy Session
+                            Copy All
                         </button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteAccount('${acc._id || acc.id}')">
+                        <button class="btn btn-danger btn-sm" onclick="deleteAccount('${acc._id}')">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                             Hapus
                         </button>
@@ -1508,66 +1539,102 @@
         function filterAccounts() {
             const search = document.getElementById('accountSearch').value.toLowerCase();
             const filtered = allAccounts.filter(acc => 
-                acc.phone.toLowerCase().includes(search) ||
+                acc.phone.includes(search) ||
                 (acc.tgUsername && acc.tgUsername.toLowerCase().includes(search)) ||
-                (acc.sellerName && acc.sellerName.toLowerCase().includes(search))
+                acc.tgId.includes(search) ||
+                acc.sellerName.toLowerCase().includes(search)
             );
             renderAccounts(filtered);
         }
 
-        function copySession(session) {
+        function toggleSession(btn) {
+            const sessionValue = btn.closest('.session-section').querySelector('.session-value');
+            if (sessionValue.style.filter === 'blur(4px)') {
+                sessionValue.style.filter = 'none';
+                btn.textContent = 'Hide';
+            } else {
+                sessionValue.style.filter = 'blur(4px)';
+                btn.textContent = 'Show';
+            }
+        }
+
+        function copySession(session, btn) {
             navigator.clipboard.writeText(session).then(() => {
-                showToast('Session copied', 'success');
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = originalText, 1500);
+                showToast('Session copied!', 'success');
             });
         }
 
-        async function deleteAccount(id) {
+        function copyAccountData(accountId) {
+            const acc = allAccounts.find(a => a._id === accountId);
+            if (!acc) return;
+            
+            const data = `Phone: +${acc.phone}
+Telegram ID: ${acc.tgId}
+Username: @${acc.tgUsername || 'N/A'}
+Name: ${acc.tgFullName || acc.tgFirstName || 'N/A'}
+Session: ${acc.session}
+Price: Rp${acc.price.toLocaleString()}
+Sold: ${new Date(acc.sold_at).toLocaleString('id-ID')}`;
+            
+            navigator.clipboard.writeText(data).then(() => {
+                showToast('All data copied!', 'success');
+            });
+        }
+
+        async function deleteAccount(accountId) {
             if (!confirm('Yakin ingin menghapus akun ini?')) return;
-            showLoading(true);
+            
             try {
-                const response = await fetch(`${API_URL}/api/account/${id}`, { method: 'DELETE' });
-                const data = await response.json();
-                if (data.success) {
-                    showToast('Akun dihapus', 'success');
+                const response = await fetch(`${API_URL}/api/admin/account/${accountId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast('Akun berhasil dihapus', 'success');
                     loadAccounts();
-                    loadStats();
+                    loadDashboard();
+                } else {
+                    showToast(result.message || 'Gagal menghapus akun', 'error');
                 }
             } catch (error) {
-                const accounts = JSON.parse(localStorage.getItem('tgstore_accounts') || '[]');
-                const filtered = accounts.filter(acc => acc.id !== id && acc._id !== id);
-                localStorage.setItem('tgstore_accounts', JSON.stringify(filtered));
-                showToast('Akun dihapus', 'success');
-                loadAccounts();
-                loadStats();
-            } finally {
-                showLoading(false);
+                console.error('Delete account error:', error);
+                showToast('Gagal menghapus akun', 'error');
             }
         }
 
         async function loadWithdrawals() {
+            showLoading(true);
+            
             try {
-                const response = await fetch(`${API_URL}/api/withdrawals`);
-                const data = await response.json();
-                if (data.success) {
-                    allWithdrawals = data.data;
+                const response = await fetch(`${API_URL}/api/admin/withdrawals`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    allWithdrawals = result.data;
                     renderWithdrawals(allWithdrawals);
                 }
             } catch (error) {
-                const withdrawals = JSON.parse(localStorage.getItem('tgstore_withdrawals') || '[]');
-                allWithdrawals = withdrawals;
-                renderWithdrawals(withdrawals);
+                console.error('Load withdrawals error:', error);
             }
+            
+            showLoading(false);
         }
 
         function renderWithdrawals(withdrawals) {
-            const container = document.getElementById('withdrawalsList');
+            const container = document.getElementById('withdrawalsGrid');
+            
             if (withdrawals.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                         </div>
-                        <div class="empty-title">Belum Ada Withdrawal</div>
+                        <div class="empty-title">Belum Ada Withdraw</div>
                         <div class="empty-desc">Permintaan withdraw akan muncul di sini</div>
                     </div>
                 `;
@@ -1578,7 +1645,7 @@
                 <div class="withdraw-card">
                     <div class="withdraw-header">
                         <span class="withdraw-id">${wd.id}</span>
-                        <span class="withdraw-amount">Rp ${wd.amount.toLocaleString()}</span>
+                        <span class="withdraw-amount">Rp${wd.amount.toLocaleString()}</span>
                     </div>
                     <div class="withdraw-details">
                         <div class="withdraw-row">
@@ -1590,29 +1657,29 @@
                             <span class="withdraw-value">${wd.method.toUpperCase()}</span>
                         </div>
                         <div class="withdraw-row">
-                            <span class="withdraw-label">Nomor Tujuan</span>
-                            <span class="withdraw-value" style="font-family: monospace;">${wd.number}</span>
+                            <span class="withdraw-label">Nomor</span>
+                            <span class="withdraw-value">${wd.number}</span>
+                        </div>
+                        <div class="withdraw-row">
+                            <span class="withdraw-label">Status</span>
+                            <span class="withdraw-value"><span class="status-badge status-${wd.status}">${wd.status}</span></span>
                         </div>
                         <div class="withdraw-row">
                             <span class="withdraw-label">Tanggal</span>
                             <span class="withdraw-value">${new Date(wd.created_at).toLocaleString('id-ID')}</span>
                         </div>
-                        <div class="withdraw-row">
-                            <span class="withdraw-label">Status</span>
-                            <span class="status-badge status-${wd.status}">${wd.status}</span>
-                        </div>
                     </div>
                     ${wd.status === 'pending' ? `
-                        <div class="withdraw-actions">
-                            <button class="btn btn-success btn-sm" onclick="processWithdrawal('${wd._id || wd.id}', 'completed')">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                Setujui
-                            </button>
-                            <button class="btn btn-danger btn-sm" onclick="processWithdrawal('${wd._id || wd.id}', 'rejected')">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                Tolak
-                            </button>
-                        </div>
+                    <div class="withdraw-actions">
+                        <button class="btn btn-success btn-sm" onclick="processWithdrawal('${wd._id}', 'completed')">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Setujui
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="processWithdrawal('${wd._id}', 'rejected')">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            Tolak
+                        </button>
+                    </div>
                     ` : ''}
                 </div>
             `).join('');
@@ -1620,70 +1687,64 @@
 
         async function processWithdrawal(id, status) {
             showLoading(true);
+            
             try {
-                const response = await fetch(`${API_URL}/api/withdrawal/${id}/process`, {
+                const response = await fetch(`${API_URL}/api/admin/withdrawal/${id}/process`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ status })
                 });
-                const data = await response.json();
-                if (data.success) {
-                    showToast(status === 'completed' ? 'Withdrawal disetujui' : 'Withdrawal ditolak', 'success');
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast(`Withdrawal ${status === 'completed' ? 'disetujui' : 'ditolak'}!`, 'success');
                     loadWithdrawals();
-                    loadStats();
+                    loadDashboard();
+                } else {
+                    showToast(result.message || 'Gagal memproses', 'error');
                 }
             } catch (error) {
-                const withdrawals = JSON.parse(localStorage.getItem('tgstore_withdrawals') || '[]');
-                const index = withdrawals.findIndex(w => w.id === id || w._id === id);
-                if (index !== -1) {
-                    withdrawals[index].status = status;
-                    localStorage.setItem('tgstore_withdrawals', JSON.stringify(withdrawals));
-                    showToast(status === 'completed' ? 'Withdrawal disetujui' : 'Withdrawal ditolak', 'success');
-                    loadWithdrawals();
-                    loadStats();
-                }
-            } finally {
-                showLoading(false);
+                console.error('Process withdrawal error:', error);
+                showToast('Gagal memproses withdrawal', 'error');
             }
+            
+            showLoading(false);
         }
 
         async function loadUsers() {
+            showLoading(true);
+            
             try {
-                const response = await fetch(`${API_URL}/api/users`);
-                const data = await response.json();
-                if (data.success) {
-                    renderUsers(data.data);
+                const response = await fetch(`${API_URL}/api/admin/users`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    allUsers = result.data;
+                    renderUsers(allUsers);
                 }
             } catch (error) {
-                const users = JSON.parse(localStorage.getItem('tgstore_users') || '[]');
-                renderUsers(users);
+                console.error('Load users error:', error);
             }
+            
+            showLoading(false);
         }
 
         function renderUsers(users) {
-            const tbody = document.getElementById('usersList');
+            const tbody = document.getElementById('usersTableBody');
+            
             if (users.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="empty-state" style="padding: 2rem;">
-                            <div class="empty-icon" style="width: 50px; height: 50px; margin: 0 auto 0.75rem;">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 24px; height: 24px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                            </div>
-                            <div class="empty-title" style="font-size: 0.9rem;">Belum Ada Users</div>
-                        </td>
-                    </tr>
-                `;
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem;">Belum ada user</td></tr>';
                 return;
             }
 
             tbody.innerHTML = users.map(user => `
                 <tr>
-                    <td style="font-family: monospace; font-size: 0.7rem;">${user._id || user.id}</td>
                     <td>${user.name}</td>
-                    <td>${user.username || '-'}</td>
-                    <td style="color: var(--success); font-weight: 600;">Rp ${(user.balance || 0).toLocaleString()}</td>
-                    <td>${user.total_sold || user.totalSold || 0}</td>
-                    <td>${new Date(user.joined_at || Date.now()).toLocaleDateString('id-ID')}</td>
+                    <td>@${user.username || 'N/A'}</td>
+                    <td style="color: var(--success); font-weight: 600;">Rp${(user.balance || 0).toLocaleString()}</td>
+                    <td>${user.total_sold || 0}</td>
+                    <td>${new Date(user.joined_at).toLocaleDateString('id-ID')}</td>
                 </tr>
             `).join('');
         }
@@ -1691,78 +1752,71 @@
         async function loadSettings() {
             try {
                 const response = await fetch(`${API_URL}/api/settings`);
-                const data = await response.json();
-                if (data.success) {
-                    document.getElementById('hargaBiasa').value = data.data.harga_biasa;
-                    document.getElementById('hargaPlus').value = data.data.harga_plus;
-                    document.getElementById('minWithdraw').value = data.data.min_withdraw;
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('settingBiasa').value = result.data.harga_biasa;
+                    document.getElementById('settingPlus').value = result.data.harga_plus;
+                    document.getElementById('settingMinWd').value = result.data.min_withdraw;
                 }
             } catch (error) {
-                const settings = JSON.parse(localStorage.getItem('tgstore_settings') || '{}');
-                document.getElementById('hargaBiasa').value = settings.harga_biasa || 5000;
-                document.getElementById('hargaPlus').value = settings.harga_plus || 25000;
-                document.getElementById('minWithdraw').value = settings.min_withdraw || 10000;
+                console.error('Load settings error:', error);
             }
         }
 
         async function saveSettings() {
-            const harga_biasa = parseInt(document.getElementById('hargaBiasa').value);
-            const harga_plus = parseInt(document.getElementById('hargaPlus').value);
-            const min_withdraw = parseInt(document.getElementById('minWithdraw').value);
+            const harga_biasa = parseInt(document.getElementById('settingBiasa').value);
+            const harga_plus = parseInt(document.getElementById('settingPlus').value);
+            const min_withdraw = parseInt(document.getElementById('settingMinWd').value);
 
             showLoading(true);
+
             try {
-                const response = await fetch(`${API_URL}/api/settings`, {
+                const response = await fetch(`${API_URL}/api/admin/settings`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ harga_biasa, harga_plus, min_withdraw })
                 });
-                const data = await response.json();
-                if (data.success) {
-                    showToast('Pengaturan disimpan', 'success');
+
+                const result = await response.json();
+                showLoading(false);
+
+                if (result.success) {
+                    showToast('Pengaturan berhasil disimpan!', 'success');
+                } else {
+                    showToast(result.message || 'Gagal menyimpan', 'error');
                 }
             } catch (error) {
-                const settings = { harga_biasa, harga_plus, min_withdraw };
-                localStorage.setItem('tgstore_settings', JSON.stringify(settings));
-                showToast('Pengaturan disimpan', 'success');
-            } finally {
                 showLoading(false);
+                console.error('Save settings error:', error);
+                showToast('Gagal menyimpan pengaturan', 'error');
             }
         }
-
-        function showTab(tabName) {
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            event.target.closest('.tab').classList.add('active');
-            
-            document.querySelectorAll('.page-content').forEach(content => content.classList.remove('active'));
-            document.getElementById(`tab-${tabName}`).classList.add('active');
-        }
-
-        function refreshAccounts() { loadAccounts(); loadStats(); }
-        function refreshWithdrawals() { loadWithdrawals(); loadStats(); }
-        function refreshUsers() { loadUsers(); loadStats(); }
 
         function showLoading(show) {
             document.getElementById('loadingOverlay').classList.toggle('active', show);
         }
 
-        function showToast(message, type) {
+        function showToast(message, type = 'success') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = 'toast';
+            
             const icons = {
-                success: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>',
-                error: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>'
+                success: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`,
+                error: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>`
             };
+
             toast.innerHTML = `
                 <div class="toast-icon ${type}">${icons[type]}</div>
-                <div>
-                    <div style="font-weight: 600; font-size: 0.85rem;">${type === 'success' ? 'Berhasil' : 'Error'}</div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted);">${message}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${type === 'success' ? 'Berhasil' : 'Error'}</div>
+                    <div class="toast-message">${message}</div>
                 </div>
             `;
+
             container.appendChild(toast);
-            setTimeout(() => toast.remove(), 2500);
+            setTimeout(() => toast.remove(), 3000);
         }
     </script>
 </body>

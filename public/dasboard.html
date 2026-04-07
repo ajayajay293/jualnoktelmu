@@ -1743,29 +1743,37 @@
 
         // Step 1: Send OTP - REAL API CALL
         async function sendOTP() {
-    const phone = document.getElementById("phoneInput").value;
+            const phone = document.getElementById('phoneInput').value.trim();
+            
+            if (!phone) {
+                showToast('Masukkan nomor telepon!', 'error');
+                return;
+            }
 
-    // 🔥 ambil user dari login
-    const user = JSON.parse(localStorage.getItem('tgstore_user'));
+            showLoading(true, 'Mengirim OTP...');
 
-    if (!user) {
-        alert("Harus login dulu!");
-        window.location.href = "login.html";
-        return;
-    }
+            try {
+                const response = await fetch(`${API_URL}/api/send-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone, userId: currentUser.id })
+                });
 
-    const res = await fetch('/api/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            phone: phone,
-            userId: user.id   // ✅ INI YANG PENTING
-        })
-    });
-
-    const data = await res.json();
-    console.log(data);
-}
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentSessionId = data.data.sessionId;
+                    showStep(2);
+                    showToast('OTP terkirim!', 'success');
+                } else {
+                    showToast(data.message, 'error');
+                }
+            } catch (error) {
+                showToast('Gagal mengirim OTP', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
 
         // Step 2: Verify OTP - REAL API CALL
         async function verifyOTP() {

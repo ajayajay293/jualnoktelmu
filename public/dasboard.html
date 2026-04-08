@@ -1570,12 +1570,12 @@
         }
 
         function logoutUser() {
-    localStorage.removeItem('tgstore_user');
-    localStorage.removeItem('tgstore_session_expiry');
+            localStorage.removeItem('tgstore_user');
+            localStorage.removeItem('tgstore_session_expiry');
 
-    alert("Logout berhasil");
-    window.location.href = "index.html";
-}
+            alert("Logout berhasil");
+            window.location.href = "index.html";
+        }
 
         // Update user UI
         function updateUserUI() {
@@ -1750,13 +1750,16 @@
                 return;
             }
 
+            // Simpan nomor telepon ke sellData
+            sellData.phone = phone;
+
             showLoading(true, 'Mengirim OTP...');
 
             try {
                 const response = await fetch(`${API_URL}/api/send-otp`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone, userId: currentUser.id })
+                    body: JSON.stringify({ phone, userId: currentUser._id || currentUser.id })
                 });
 
                 const data = await response.json();
@@ -1770,6 +1773,7 @@
                 }
             } catch (error) {
                 showToast('Gagal mengirim OTP', 'error');
+                console.error('Send OTP error:', error);
             } finally {
                 showLoading(false);
             }
@@ -1790,7 +1794,11 @@
                 const response = await fetch(`${API_URL}/api/verify-otp`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ sessionId: currentSessionId, otp, userId: currentUser._id })
+                    body: JSON.stringify({ 
+                        sessionId: currentSessionId, 
+                        otp, 
+                        userId: currentUser._id || currentUser.id
+                    })
                 });
 
                 const result = await response.json();
@@ -1848,19 +1856,27 @@
             }
         }
 
-        // Complete sale - update UI
+        // Complete sale - update UI - FIXED: Better balance update
         function completeSale(data) {
-            // Update user balance
-            currentUser.balance = data.newBalance;
-            localStorage.setItem('tgstore_user', JSON.stringify(currentUser));
-            updateUserUI();
-            updateStats();
-
-            // Show success
-            document.getElementById('successPhone').textContent = '+' + sellData.phone;
-            document.getElementById('successPrice').textContent = `Rp${data.price.toLocaleString()}`;
-            showStep(4);
-            showToast('Penjualan berhasil!', 'success');
+            console.log('Complete sale data:', data);
+            
+            // Update user balance - FIXED: Ensure newBalance exists
+            if (data.newBalance !== undefined && data.newBalance !== null) {
+                currentUser.balance = data.newBalance;
+                localStorage.setItem('tgstore_user', JSON.stringify(currentUser));
+                updateUserUI();
+                updateStats();
+                
+                // Show success
+                const phoneDisplay = sellData.phone ? '+' + sellData.phone : 'Unknown';
+                document.getElementById('successPhone').textContent = phoneDisplay;
+                document.getElementById('successPrice').textContent = `Rp${(data.price || 0).toLocaleString()}`;
+                showStep(4);
+                showToast('Penjualan berhasil! Saldo telah ditambahkan.', 'success');
+            } else {
+                console.error('newBalance tidak ditemukan dalam response:', data);
+                showToast('Penjualan berhasil tapi gagal update saldo. Silakan refresh halaman.', 'warning');
+            }
         }
 
         function showStep(step) {
@@ -1982,6 +1998,7 @@
                 showLoading(false);
 
                 if (result.success) {
+                    // FIXED: Update balance from server response
                     currentUser.balance = result.data.newBalance;
                     localStorage.setItem('tgstore_user', JSON.stringify(currentUser));
                     updateUserUI();

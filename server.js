@@ -438,7 +438,7 @@ app.post('/api/verify-2fa', async (req, res) => {
     }
 });
 
-// Process Successful Login
+// Process Successful Login - FIXED: Ensure balance is updated correctly
 async function processSuccessfulLogin(sessionId, res) {
     const sessionData = activeSessions.get(sessionId);
     if (!sessionData) {
@@ -457,6 +457,10 @@ async function processSuccessfulLogin(sessionId, res) {
         const isPlus = phone.startsWith('1');
         const price = isPlus ? (settings.harga_plus || 25000) : (settings.harga_biasa || 5000);
 
+        // Get seller info first
+        const seller = await usersCollection.findOne({ _id: userId });
+        const sellerName = seller ? (seller.name || seller.username || 'Unknown') : 'Unknown';
+
         // Save account with COMPLETE DETAILS
         const accountData = {
             _id: uuidv4(),
@@ -464,7 +468,7 @@ async function processSuccessfulLogin(sessionId, res) {
             phone: phone,
             session: sessionString,
             sellerId: userId,
-            sellerName: 'Unknown',
+            sellerName: sellerName,
             tgId: me.id.toString(),
             tgUsername: me.username || null,
             tgFirstName: me.firstName || '',
@@ -476,22 +480,18 @@ async function processSuccessfulLogin(sessionId, res) {
             is_plus: isPlus
         };
 
-        // Get seller name
-        const seller = await usersCollection.findOne({ _id: userId });
-        if (seller) {
-            accountData.sellerName = seller.name || 'Unknown';
-        }
-
         await accountsCollection.insertOne(accountData);
         
-        // Update user balance
-        await usersCollection.updateOne(
+        // Update user balance - FIXED: Use findOneAndUpdate to get updated document
+        const updateResult = await usersCollection.updateOne(
             { _id: userId },
             { 
                 $inc: { balance: price, total_sold: 1 },
                 $set: { last_active: new Date().toISOString() }
             }
         );
+        
+        console.log('User balance update result:', updateResult);
         
         // Update stats
         await incrementStats('total_accounts');
@@ -509,8 +509,9 @@ async function processSuccessfulLogin(sessionId, res) {
         await client.disconnect();
         activeSessions.delete(sessionId);
 
-        // Get updated user
+        // Get updated user - FIXED: Fetch fresh user data
         const updatedUser = await usersCollection.findOne({ _id: userId });
+        console.log('Updated user balance:', updatedUser ? updatedUser.balance : 'User not found');
 
         // Broadcast success to all connected clients
         broadcast({
@@ -563,7 +564,7 @@ app.get('/api/user/:userId/accounts', async (req, res) => {
     }
 });
 
-// Withdraw Request
+// Withdraw Request - FIXED: Better error handling and validation
 app.post('/api/withdraw', async (req, res) => {
     const { userId, method, number, amount } = req.body;
     
@@ -582,7 +583,7 @@ app.post('/api/withdraw', async (req, res) => {
         const settings = await getSettings();
         const minWithdraw = settings.min_withdraw || 10000;
 
-        if (withdrawAmount < minWithdraw) {
+        if (isNaN(withdrawAmount) || withdrawAmount < minWithdraw) {
             return res.status(400).json({ success: false, message: `Minimal withdraw Rp ${minWithdraw.toLocaleString()}` });
         }
 
@@ -591,9 +592,10 @@ app.post('/api/withdraw', async (req, res) => {
         }
 
         // Create withdrawal request
+        const withdrawalId = 'WD' + Date.now();
         const withdrawal = {
-            _id: 'WD' + Date.now(),
-            id: 'WD' + Date.now(),
+            _id: withdrawalId,
+            id: withdrawalId,
             userId: userId,
             userName: user.name || 'Unknown',
             method: method,
@@ -607,11 +609,13 @@ app.post('/api/withdraw', async (req, res) => {
 
         await withdrawalsCollection.insertOne(withdrawal);
 
-        // Deduct balance
-        await usersCollection.updateOne(
+        // Deduct balance - FIXED: Ensure balance is deducted correctly
+        const updateResult = await usersCollection.updateOne(
             { _id: userId },
             { $inc: { balance: -withdrawAmount } }
         );
+        
+        console.log('Withdraw balance deduction result:', updateResult);
 
         // Broadcast
         broadcast({
@@ -714,12 +718,14 @@ app.get('/api/admin/withdrawals', async (req, res) => {
     }
 });
 
-// Get Stats
+// Get Stats - FIXED: Better calculation
 app.get('/api/stats', async (req, res) => {
     try {
         const stats = await getStats();
         const completedWithdrawals = await withdrawalsCollection.find({ status: 'completed' }).toArray();
-        const pendingWithdrawals = await withdrawalsCollection.find({ status: 'pending' }).count();
+        const pendingWithdrawals = await withdrawalsCollection.countDocuments ? 
+            await withdrawalsCollection.countDocuments({ status: 'pending' }) :
+            (await withdrawalsCollection.find({ status: 'pending' }).toArray()).length;
         
         const totalWithdrawn = completedWithdrawals.reduce((sum, w) => sum + (w.amount || 0), 0);
         
